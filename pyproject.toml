@@ -1,0 +1,55 @@
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[project]
+name = "data-science-utils"
+version = "0.1.0"
+description = "Collection of helper functions for machine-learning and statistical analyses"
+readme = "README.md"
+requires-python = ">=3.11"
+license = { text = "MIT" }
+authors = [
+    { name = "André Lourenço", email = "andrelourenco300@gmail.com" }
+]
+keywords = ["data science", "statistics", "machine learning"]
+classifiers = [
+    "Programming Language :: Python :: 3",
+    "License :: OSI Approved :: MIT License",
+    "Operating System :: OS Independent",
+]
+dependencies = [
+	"numpy>=2.4.4",
+    "pandas>=3.0.2",
+	"statsmodels>=0.14.6"
+]
+# Optional dependencies
+[project.optional-dependencies]
+dev = [
+    "ruff",
+    "pytest"
+]
+
+[project.urls]
+Homepage = "https://github.com/poroc300/data-science-utils"
+
+# Tells hatchling where your source code lives
+[tool.hatch.build.targets.wheel]
+packages = ["src/dscience_utils"]
+
+# Ruff linter configuration
+[tool.ruff]
+line-length = 90
+
+[tool.ruff.lint]
+select = ["E", "F", "W"]        # E=pycodestyle errors, F=pyflakes, W=pycodestyle warnings
+ignore = ["E501"]               # Ignore line length (handled by formatter)
+
+[tool.ruff.format]
+quote-style = "double"          # Enforce double quotes    
+
+# Pytest configuration — discovers tests in each submodule's tests folder
+[tool.pytest.ini_options]
+testpaths = [
+    "src/dscience_utils/statistics/tests"
+]
