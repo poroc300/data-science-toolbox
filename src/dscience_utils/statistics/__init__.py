@@ -1,0 +1,1 @@
+from .multicollinearity import vif
