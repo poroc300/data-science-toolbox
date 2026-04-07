@@ -1,4 +1,4 @@
-"""Functions to assess correlation and multicollinearity among avriables."""
+"""Functions to assess correlation and multicollinearity among variables."""
 
 from itertools import combinations
 
@@ -91,8 +91,10 @@ def correlation(df, method="all"):
             pair = df_num[[cols[i], cols[j]]].dropna()
             _, pval = pval_funcs[method](pair[cols[i]], pair[cols[j]])
             pval_matrix[i, j] = pval_matrix[j, i] = pval
-            corr_results[f"{method}_pvalues"] = pd.DataFrame(
-                pval_matrix, index=cols, columns=cols
-            )
+        
+        # add p-value matrix to output
+        corr_results[f"{method}_pvalues"] = pd.DataFrame(
+            pval_matrix, index=cols, columns=cols
+        )
 
     return corr_results
