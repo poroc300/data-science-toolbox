@@ -1,1 +1,1 @@
-from .multicollinearity import vif
+from .multicollinearity import correlation, vif

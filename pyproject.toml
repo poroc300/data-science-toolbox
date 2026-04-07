@@ -48,6 +48,9 @@ ignore = ["E501"]               # Ignore line length (handled by formatter)
 [tool.ruff.format]
 quote-style = "double"          # Enforce double quotes    
 
+[tool.ruff.lint.per-file-ignores]
+"__init__.py" = ["F401"] # Ignore __init__.py files when running ruff check
+
 # Pytest configuration — discovers tests in each submodule's tests folder
 [tool.pytest.ini_options]
 testpaths = [
