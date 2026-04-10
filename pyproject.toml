@@ -55,5 +55,5 @@ quote-style = "double"          # Enforce double quotes
 # Pytest configuration — discovers tests in each submodule's tests folder
 [tool.pytest.ini_options]
 testpaths = [
-    "src/dscience_utils/stats/tests"
+    "src/dscience_utils/core_stats/tests"
 ]

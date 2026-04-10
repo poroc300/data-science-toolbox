@@ -4,7 +4,19 @@ import numpy as np
 import pytest
 from numpy.testing import assert_allclose
 
-from dscience_utils.stats import summary_stats
+from dscience_utils.core_stats import column_dtypes, summary_stats
+
+
+def test_column_dtypes(titanic_df):
+    """Test columns are identified with the correct dtypes."""
+    # get expected number of columns with a dtype and run test function
+    exp_count = {"str": 5, "int64": 4, "float64": 2, "bool": 2, "category": 2}
+    test = column_dtypes(titanic_df)
+
+    # assertions
+    assert all(len(cols) == exp_count[dt] for dt, cols in test.items())
+    for _dtype, cols in test.items():
+        assert np.all(titanic_df[cols].dtypes == _dtype)
 
 
 def test_summary_stats_output_columns(titanic_df):

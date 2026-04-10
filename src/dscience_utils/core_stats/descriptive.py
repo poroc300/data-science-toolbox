@@ -3,6 +3,24 @@
 import numpy as np
 
 
+def column_dtypes(df):
+    """
+    Get a dict grouping the columns per dtype.
+
+    Parameters
+    ----------
+    df : DataFrame
+        Input DataFrame.
+
+    Returns
+    -------
+    dict
+        dict mapping the dtype names to the column names (lists) with that dtype.
+    """
+    _dtypes = df.dtypes.astype(str)
+    return _dtypes.groupby(_dtypes).apply(lambda x: x.index.tolist()).to_dict()
+
+
 def summary_stats(df, subset=None, percentiles=None):
     """
     Descriptive statistics built on top of pd.DataFrame.describe(), extended with

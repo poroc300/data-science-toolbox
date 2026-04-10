@@ -3,7 +3,7 @@
 import numpy as np
 import pytest
 
-from dscience_utils.stats import correlation, vif
+from dscience_utils.core_stats import correlation, vif
 
 
 def test_vif(sample_df):
