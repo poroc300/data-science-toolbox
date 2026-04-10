@@ -91,7 +91,7 @@ def correlation(df, method="all"):
             pair = df_num[[cols[i], cols[j]]].dropna()
             _, pval = pval_funcs[method](pair[cols[i]], pair[cols[j]])
             pval_matrix[i, j] = pval_matrix[j, i] = pval
-        
+
         # add p-value matrix to output
         corr_results[f"{method}_pvalues"] = pd.DataFrame(
             pval_matrix, index=cols, columns=cols

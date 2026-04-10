@@ -21,6 +21,7 @@ classifiers = [
 dependencies = [
 	"numpy>=2.4.4",
     "pandas>=3.0.2",
+	"seaborn>=0.13.2",
 	"statsmodels>=0.14.6"
 ]
 # Optional dependencies
@@ -54,5 +55,5 @@ quote-style = "double"          # Enforce double quotes
 # Pytest configuration — discovers tests in each submodule's tests folder
 [tool.pytest.ini_options]
 testpaths = [
-    "src/dscience_utils/statistics/tests"
+    "src/dscience_utils/stats/tests"
 ]
