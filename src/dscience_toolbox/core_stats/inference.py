@@ -1,7 +1,7 @@
 """Statistical inference functions for hypothesis testing."""
 
 import numpy as np
-from scipy.stats import ttest_ind, ttest_rel
+from scipy.stats import mannwhitneyu, ttest_ind, ttest_rel, wilcoxon
 
 from dscience_toolbox.utils import _to_numpy
 
@@ -120,13 +120,51 @@ def t_test(arr1, arr2, paired=False, alternative="two-sided", **kwargs):
 
     Returns
     -------
-    tuple
-        tuple with the computed t-statistic and the respective p-value.
+    TtestResult
+        Class which contains the "statistic" and "pvalue" attributes.
     """
     arr1, arr2 = _to_numpy(arr1), _to_numpy(arr2)
     if paired:
-        if len(arr1) != len(arr2):
+        if arr1.size != arr2.size:
             msg = "both samples must have the same length in a paired t-test"
             raise ValueError(msg)
         return ttest_rel(arr1, arr2, alternative=alternative, **kwargs)
     return ttest_ind(arr1, arr2, alternative=alternative, **kwargs)
+
+
+def rank_based_tests(arr1, arr2, paired=False, alternative="two-sided", **kwargs):
+    """
+    Perform a rank-based nonparametric comparison between two samples. This function
+    wraps scipy.stats.mannwhitneyu and scipy.stats.wilcoxon.
+
+    Parameters
+    ----------
+    arr1 : array-like
+        First sample of observations.
+    arr2 : array-like
+        Second sample of observations.
+    paired : bool, optional
+        Whether the two samples are paired (dependent observations). If True,
+        the Wilcoxon signed-rank test is used. If False, the Mann-Whitney U test
+        is used. Default is False.
+    alternative : str, optional
+        Defines the alternative hypothesis. The available options are:
+            * "two-sided" - the means of the sample distributions are unequal (default).
+            * "less" - the mean of sample 1 is lower than the mean of sample 2.
+            * "greater" - the mean of sample 1 is higher than the mean of sample 2.
+    **kwargs : dict, optional
+       Additional keyword arguments passed to scipy.stats.mannwhitneyu if paired=False
+       or to scipy.stats.wilcoxon in case paired=True.
+
+    Returns
+    -------
+    WilcoxonResult or MannwhitneyuResult
+        Classes which contain the "statistic" and "pvalue" attributes.
+    """
+    arr1, arr2 = _to_numpy(arr1), _to_numpy(arr2)
+    if paired:
+        if arr1.size != arr2.size:
+            msg = "both samples must have the same length in a Wilcoxon test"
+            raise ValueError(msg)
+        return wilcoxon(arr1, arr2, alternative=alternative, **kwargs)
+    return mannwhitneyu(arr1, arr2, alternative=alternative, **kwargs)

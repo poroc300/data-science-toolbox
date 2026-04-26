@@ -7,6 +7,7 @@ from dscience_toolbox.core_stats import (
     _cohens_d_independent,
     _cohens_dz_paired,
     cohens_d,
+    rank_based_tests,
     t_test,
 )
 
@@ -57,5 +58,20 @@ def test_t_test(paired):
     # assertions
     _, pval1 = t_test(arr1, arr2, paired=paired)
     _, pval2 = t_test(arr1, arr3, paired=paired)
+    assert pval1 > 0.1
+    assert pval2 < 0.05
+
+
+@pytest.mark.parametrize("paired", (True, False))
+def test_rank_based_tests(paired):
+    """Test independent and paired rank-based statistics."""
+    # create arrays for testing
+    arr1 = np.random.randint(1, 3, size=50)
+    arr2 = arr1 + np.tile([-1, 1], 25)
+    arr3 = np.arange(1, 51)
+
+    # assertions
+    _, pval1 = rank_based_tests(arr1, arr2, paired=paired)
+    _, pval2 = rank_based_tests(arr1, arr3, paired=paired)
     assert pval1 > 0.1
     assert pval2 < 0.05

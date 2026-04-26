@@ -16,6 +16,16 @@ All notable changes to this project will be documented in this file.
 - **Maintenance (Internal Changes)**  
   For refactoring, dependency updates, code cleanup, documentation improvements, and other non-functional changes.
 
+## [0.2.0] - 2026/XX/XX
+### New Features
+- **`core_stats`**
+  - Added `rank_based_tests` to perform non-parametric tests on two samples (Mann-Whitney and Wilcoxon).
+
+### Maintenance
+- **`core_stats`**
+  - Corrected returned output types in docstring of `t_test()`.
+
+
 ## [0.1.0] - 2026/04/26
 Project initialisation. Contains three submodules: **`core_stats`**, **`visualisation`** and **`utils`**. 
 
