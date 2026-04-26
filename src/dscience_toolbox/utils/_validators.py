@@ -16,7 +16,9 @@ def _to_numpy(x, dtype="float64", ndim=None):
         numpy compatible dtype. Defaults to np.float64.
     ndim : int, optiona;
         Required dimensions, either 1 or 2 (not compatible with more higher number
-        of dimensions). The default is to not change the dimension.
+        of dimensions). Note that if the array is flatten when changing from 2
+        to 1 dimensions, which may not be the desired output when multiple columns
+        are present. The default is to not change the dimension.
 
     Returns
     -------

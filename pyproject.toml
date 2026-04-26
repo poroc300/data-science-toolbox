@@ -3,7 +3,7 @@ requires = ["hatchling"]
 build-backend = "hatchling.build"
 
 [project]
-name = "data-science-utils"
+name = "data-science-toolbox"
 version = "0.1.0"
 description = "Collection of helper functions for machine-learning and statistical analyses"
 readme = "README.md"
@@ -36,7 +36,7 @@ Homepage = "https://github.com/poroc300/data-science-utils"
 
 # Tells hatchling where your source code lives
 [tool.hatch.build.targets.wheel]
-packages = ["src/dscience_utils"]
+packages = ["src/dscience_toolbox"]
 
 # Ruff linter configuration
 [tool.ruff]
@@ -55,5 +55,6 @@ quote-style = "double"          # Enforce double quotes
 # Pytest configuration — discovers tests in each submodule's tests folder
 [tool.pytest.ini_options]
 testpaths = [
-    "src/dscience_utils/core_stats/tests"
+    "src/dscience_toolbox/core_stats/tests",
+	"src/dscience_toolbox/utils/tests"
 ]

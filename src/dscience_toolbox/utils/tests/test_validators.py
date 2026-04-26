@@ -4,7 +4,7 @@ import numpy as np
 import pandas as pd
 import pytest
 
-from dscience_utils.utils import _to_numpy
+from dscience_toolbox.utils import _to_numpy
 
 
 @pytest.mark.parametrize("arr", ([], pd.Series(), np.ones((3, 3, 3))))

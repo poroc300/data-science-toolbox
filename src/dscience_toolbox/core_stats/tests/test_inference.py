@@ -3,7 +3,7 @@
 import numpy as np
 import pytest
 
-from dscience_utils.core_stats import t_test
+from dscience_toolbox.core_stats import t_test
 
 np.random.seed(7)
 

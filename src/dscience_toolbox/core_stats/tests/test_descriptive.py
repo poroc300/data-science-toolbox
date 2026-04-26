@@ -4,7 +4,7 @@ import numpy as np
 import pytest
 from numpy.testing import assert_allclose
 
-from dscience_utils.core_stats import column_dtypes, summary_stats
+from dscience_toolbox.core_stats import column_dtypes, summary_stats
 
 
 def test_column_dtypes(titanic_df):
