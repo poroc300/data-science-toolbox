@@ -3,6 +3,7 @@
 import warnings
 
 import numpy as np
+import pandas as pd
 
 
 def _to_numpy(x, dtype="float64", ndim=None):
@@ -24,11 +25,11 @@ def _to_numpy(x, dtype="float64", ndim=None):
     -------
     ndarray
         numpy array.
-        
+
     Notes
     -----
     If a 2D array is supplied and required to coerce to 1D array, a warning will
-    be printed in cases where multiple columns exist.        
+    be printed in cases where multiple columns exist.
 
     """
     # check input is a numpy array otherwise coerce it
@@ -50,3 +51,36 @@ def _to_numpy(x, dtype="float64", ndim=None):
     elif ndim == 2 and arr.ndim <= 1:
         arr = arr.reshape(-1, 1)
     return arr
+
+
+def _validate_pandas_dataframe(df, input_arg):
+    """
+    Check if a pandas DataFrame was passed in a specific input argument. Will
+    coerce a pandas Series to DataFrame.
+
+    Parameters
+    ----------
+    df : DataFrame or Series
+        Input object to validate.
+    input_arg : str
+        Name of input argument to be displayed on error message in case the
+        input is not a Series or DataFrame.
+
+    Returns
+    -------
+    pandas.DataFrame
+        Validated DataFrame.
+    """
+    # input is a DataFrame
+    if isinstance(df, pd.DataFrame):
+        return df
+
+    # input is a Series, coerce to a DataFrame
+    if isinstance(df, pd.Series):
+        warnings.warn("input Series was coerced to a DataFrame")
+        return df.to_frame()
+
+    # raise error when input is not a DataFrame or Series
+    raise TypeError(
+        f"{input_arg} must be a pandas DataFrame or Series, got {type(df).__name__}"
+    )

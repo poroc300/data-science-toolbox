@@ -7,6 +7,8 @@ import pandas as pd
 from scipy.stats import kendalltau, pearsonr, spearmanr
 from statsmodels.stats.outliers_influence import variance_inflation_factor
 
+from dscience_toolbox.utils import _validate_pandas_dataframe
+
 
 def vif(df):
     """
@@ -27,6 +29,7 @@ def vif(df):
 
     """
     # get numeric columns and remove nan values
+    df = _validate_pandas_dataframe(df, input_arg="df")
     df_num = df.select_dtypes("number").copy()
     df_num = df_num.dropna(axis=0, how="any")
 
@@ -61,6 +64,7 @@ def correlation(df, method="all"):
 
     """
     # find method to be used
+    df = _validate_pandas_dataframe(df, input_arg="df")
     methods = ["pearson", "spearman", "kendall"]
     if method in methods:
         methods = [method]

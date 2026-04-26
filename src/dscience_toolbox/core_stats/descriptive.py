@@ -2,6 +2,8 @@
 
 import numpy as np
 
+from dscience_toolbox.utils import _validate_pandas_dataframe
+
 
 def column_dtypes(df):
     """
@@ -17,6 +19,7 @@ def column_dtypes(df):
     dict
         dict mapping the dtype names to the column names (lists) with that dtype.
     """
+    df = _validate_pandas_dataframe(df, input_arg="df")
     _dtypes = df.dtypes.astype(str)
     return _dtypes.groupby(_dtypes).apply(lambda x: x.index.tolist()).to_dict()
 
@@ -42,6 +45,7 @@ def summary_stats(df, subset=None, percentiles=None):
         Stats table with columns = selected numeric columns.
     """
     # select only numeric columns
+    df = _validate_pandas_dataframe(df, input_arg="df")
     df_num = df.select_dtypes(include="number").copy()
     if df_num.empty:
         raise ValueError("no numeric columns found")
