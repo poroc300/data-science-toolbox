@@ -84,3 +84,24 @@ def _validate_pandas_dataframe(df, input_arg):
     raise TypeError(
         f"{input_arg} must be a pandas DataFrame or Series, got {type(df).__name__}"
     )
+
+
+def _check_plotting_inputs(df, required_cols):
+    """
+    Check the input variables provided to a plotting function.
+
+    Parameters
+    ----------
+    df : DataFrame
+        The input DataFrame provided to the plotting function.
+    required_cols : sequence-like
+        Sequence with the names of the columns to be used (e.g. for x and y axes).
+
+    Raises
+    ------
+    KeyError
+        When a column name is not in df, a KeyError is raised.
+    """
+    missing_cols = set(required_cols) - set(df.columns)
+    if missing_cols:
+        raise KeyError(f"missing columns in DataFrame: {missing_cols}")

@@ -4,7 +4,11 @@ import numpy as np
 import pandas as pd
 import pytest
 
-from dscience_toolbox.utils import _to_numpy, _validate_pandas_dataframe
+from dscience_toolbox.utils import (
+    _check_plotting_inputs,
+    _to_numpy,
+    _validate_pandas_dataframe,
+)
 
 
 @pytest.mark.parametrize("arr", ([], pd.Series(), np.ones((3, 3, 3))))
@@ -56,3 +60,14 @@ def test_validate_pandas_dataframe_invalid_input():
     msg = "arg must be a pandas DataFrame or Series, got list"
     with pytest.raises(TypeError, match=msg):
         _validate_pandas_dataframe([3], input_arg="arg")
+
+
+def test_check_plotting_inputs(sample_df):
+    """Test the function _check_plotting_inputs."""
+    # columns exist in DataFrame
+    _check_plotting_inputs(sample_df, {"x1", "x2"})
+
+    # at least one column does not exist
+    msg = "missing columns in DataFrame: {'dummy'}"
+    with pytest.raises(KeyError, match=msg):
+        _check_plotting_inputs(sample_df, {"x1", "x2", "dummy"})
