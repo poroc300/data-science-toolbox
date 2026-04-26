@@ -79,9 +79,9 @@ def barplot(
     annots_label_size : int, optional
         Label size of annotations. The default is 16.
     axes_names : sequence-like, optional
-        Must be a sequence of two elements to overwrite the names of the x and y
+        Must be a sequence of two elements to set the names of the x and y
         axes. This is a convenience argument. The default is None (use directly
-        the names supplied in xvar and yvar.
+        the names supplied in xvar and yvar).
     plot_kwargs : dict, optional
        Additional keyword arguments passed directly to the underlying seaborn
        sns.barplot function. The default is None (don't pass any).
@@ -178,6 +178,162 @@ def barplot(
                 fontsize=annots_label_size,
             )
             idx += n_bars_group
+
+    # create legend
+    if grp_var is not None:
+        handles, labels = ax.get_legend_handles_labels()
+        ax.legend(
+            handles,
+            labels,
+            fontsize=font_sizes["legend"],
+            bbox_to_anchor=(1.01, 0.7),
+            loc="upper left",
+            frameon=True,
+        )
+
+    # save plot or just return the ax object
+    if save_path is not None:
+        plt.tight_layout()
+        plt.savefig(save_path, bbox_inches="tight")
+        plt.close()
+    else:
+        return ax
+
+
+def boxplot(
+    df,
+    xvar,
+    yvar,
+    save_path=None,
+    plot_size=(12, 8),
+    grp_var=None,
+    title=None,
+    ylims=None,
+    font_sizes=None,
+    rotate_x_labels=0,
+    hlines=None,
+    axes_names=None,
+    plot_kwargs=None,
+):
+    """
+    Create a boxplot. Uses sns.boxplot internally, but contains a set of arguments
+    that facilitate changing key aesthetic elements.
+
+    Parameters
+    ----------
+    df : DataFrame
+        Input DataFrame.
+    xvar : str
+        Name of column in df to be plotted in x axis.
+    yvar : str
+        Name of column in df to be plotted in the y axis.
+    save_path : str or pathlib.PurePath, optional
+        Path to save the plot. The default is None, which won't save any image
+        and will return the matplotlib.axes.Axes object for further editing
+        if required.
+    plot_size : sequence-like, optional
+        Sequence with the width and height of the plot. The default is (12, 8).
+    grp_var : str, optional
+        Name of the column in df to group values (equivalent to the "hue" parameter
+        in seaborn). If supplied, will trigger the creation of a legend. The default
+        is None (don't use any variable).
+    title : str, optional
+        Title of plot. The default is None (no title).
+    ylims : sequence-like, optional
+        Sequence with the minimum and maximum values for the y axis. The default
+        is None (determined by seaborn).
+    font_sizes : dict, optional
+        Font sizes (int) for plot elements:
+            - "title" -> default is 26
+            - "axis" -> default is 22
+            - "ticks" -> default is 18
+            - "legend" -> default is 18
+    rotate_x_labels : int, optional
+        Degree of rotation of x tick labels. The default is 0 (horizontal).
+    hlines : sequence-like, optional
+        Adds a horizontal line. The default is None (no line). Must be a sequence
+        with four elements:
+            1. y coordinate to draw the line (int)
+            2. line style ('-', '--', '-.', ':') -> see matplotlib docs
+            3. line width (int)
+            4. line colour (str)
+    axes_names : sequence-like, optional
+        Must be a sequence of two elements to set the names of the x and y
+        axes. This is a convenience argument. The default is None (use directly
+        the names supplied in xvar and yvar).
+    plot_kwargs : dict, optional
+        Additional keyword arguments passed directly to the underlying seaborn
+        sns.boxplot function. The default is None (don't pass any).
+
+    Returns
+    -------
+    ax : matplotlib.axes.Axes
+        Axes object that can be further used to modify the plot aesthetics. Will
+        only return this object if save_path=None, otherwise an image is created
+        and nothing will be returned.
+    """
+
+    # validation of input
+    df = _validate_pandas_dataframe(df, input_arg="df")
+    required_cols = {xvar, yvar}
+    if grp_var is not None:
+        required_cols.add(grp_var)
+    _check_plotting_inputs(df, required_cols)
+
+    # create dict with parameters to be added to the seaborn function
+    plt.figure(figsize=plot_size)
+    params = {"x": xvar, "y": yvar, "data": df}
+    if grp_var is not None:
+        params["hue"] = grp_var
+    if plot_kwargs is not None:
+        if not isinstance(plot_kwargs, dict):
+            raise TypeError("plot_kwargs must be a dict")
+        params.update(plot_kwargs)
+
+    # create visualisation
+    ax = sns.boxplot(**params)
+
+    # create dict with font sizes (will update defaults where only necessary)
+    default_fonts = {
+        "title": 26,
+        "axis": 22,
+        "ticks": 18,
+        "legend": 18,
+    }
+    if font_sizes is None:
+        font_sizes = {}
+    elif not isinstance(font_sizes, dict):
+        raise TypeError("font_sizes must be a dict")
+    font_sizes = {**default_fonts, **font_sizes}
+
+    # plot's title
+    if title is not None:
+        ax.set_title(title, fontsize=font_sizes["title"])
+
+    # axes and ticks labels
+    if axes_names is None:
+        x_label, y_label = xvar, yvar
+    else:
+        if len(axes_names) != 2:
+            raise ValueError("axes_names must have 2 elements")
+        x_label, y_label = axes_names
+    ax.set_xlabel(x_label, fontsize=font_sizes["axis"], labelpad=10)
+    ax.set_ylabel(y_label, fontsize=font_sizes["axis"], labelpad=10)
+    ax.tick_params(axis="x", labelsize=font_sizes["ticks"], rotation=rotate_x_labels)
+    ax.tick_params(axis="y", labelsize=font_sizes["ticks"])
+
+    # set y limits
+    if ylims is not None:
+        if len(ylims) != 2:
+            raise ValueError("ylims must have 2 elements")
+        ax.set_ylim(*ylims)
+
+    # add a basic horizontal line
+    if hlines is not None:
+        if len(hlines) != 4:
+            raise ValueError("hlines must be (y, linestyle, linewidth, color)")
+        y, ls, lw, color = hlines
+        ax.axhline(y=y, linestyle=ls, linewidth=lw, color=color)
 
     # create legend
     if grp_var is not None:

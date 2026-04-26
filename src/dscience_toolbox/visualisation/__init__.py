@@ -1,1 +1,1 @@
-from .categorical_plots import barplot
+from .categorical_plots import barplot, boxplot
