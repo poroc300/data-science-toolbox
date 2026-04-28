@@ -22,7 +22,6 @@ def barplot(
     rotate_x_labels=0,
     hlines=None,
     annots=None,
-    annots_label_size=16,
     axes_names=None,
     plot_kwargs=None,
 ):
@@ -76,8 +75,6 @@ def barplot(
         assume grp_var has two categories (4 bars). The user must supply first all
         labels for the first category, then for second, etc... The default is None
         (no annotation of labels).
-    annots_label_size : int, optional
-        Label size of annotations. The default is 16.
     axes_names : sequence-like, optional
         Must be a sequence of two elements to set the names of the x and y
         axes. This is a convenience argument. The default is None (use directly
@@ -140,8 +137,8 @@ def barplot(
         if len(axes_names) != 2:
             raise ValueError("axes_names must have 2 elements")
         x_label, y_label = axes_names
-    ax.set_xlabel(xvar, fontsize=font_sizes["axis"], labelpad=10)
-    ax.set_ylabel(yvar, fontsize=font_sizes["axis"], labelpad=10)
+    ax.set_xlabel(x_label, fontsize=font_sizes["axis"], labelpad=10)
+    ax.set_ylabel(y_label, fontsize=font_sizes["axis"], labelpad=10)
     ax.tick_params(axis="x", labelsize=font_sizes["ticks"], rotation=rotate_x_labels)
     ax.tick_params(axis="y", labelsize=font_sizes["ticks"])
 
@@ -175,7 +172,7 @@ def barplot(
                 container,
                 labels=labels,
                 padding=3,
-                fontsize=annots_label_size,
+                fontsize=font_sizes["annotations"],
             )
             idx += n_bars_group
 
