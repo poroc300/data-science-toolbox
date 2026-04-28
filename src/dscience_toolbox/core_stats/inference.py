@@ -97,8 +97,9 @@ def cohens_d(arr1, arr2, method="independent"):
 
 def t_test(arr1, arr2, paired=False, alternative="two-sided", **kwargs):
     """
-    Perform a t-test (independent or paired) between two samples. This function
-    wraps scipy.stats.ttest_ind and scipy.stats.ttest_rel.
+    Perform a t-test (independent or paired) of difference of means between two
+    samples. This function wraps scipy.stats.ttest_ind and scipy.stats.ttest_rel.
+    To be used when samples are normally distributed.
 
     Parameters
     ----------
