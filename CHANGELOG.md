@@ -20,6 +20,16 @@ All notable changes to this project will be documented in this file.
 ### New Features
 - **`core_stats`**
   - Added `rank_based_tests` to perform non-parametric tests on two samples (Mann-Whitney and Wilcoxon).
+  - Added `categorical_summary_stats` to calculate summary statistics of categorical variables.
+
+### Enhanced
+- **`core_stats`**
+  - Empty columns in `summary_stats` are now explicitly removed to make the output cleaner.
+
+### Fixed
+- **`visualisation`**
+  - The `axes_names` argument in `barplot` was not overwriting the labels of the x and y axes.
+  - The font size of annotations in `barplot` was being incorrectly controlled by a deprecated parameter instead of `font_sizes` argument.
 
 ### Maintenance
 - **`core_stats`**
