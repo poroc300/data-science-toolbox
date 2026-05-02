@@ -22,6 +22,10 @@ All notable changes to this project will be documented in this file.
   - Added `rank_based_tests` to perform non-parametric tests on two samples (Mann-Whitney and Wilcoxon).
   - Added `permutation_test_means` to perform a permutation test of the difference of means between two independent or paired samples.
   - Added `categorical_summary_stats` to calculate summary statistics of categorical variables.
+  
+- **`utils`**
+  - Added `load_txt` to read .txt files as a list or DataFrame.
+  - Added `load_json` to read json files.
 
 ### Enhanced
 - **`core_stats`**
