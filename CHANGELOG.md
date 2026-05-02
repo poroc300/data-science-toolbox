@@ -20,6 +20,7 @@ All notable changes to this project will be documented in this file.
 ### New Features
 - **`core_stats`**
   - Added `rank_based_tests` to perform non-parametric tests on two samples (Mann-Whitney and Wilcoxon).
+  - Added `permutation_test_means` to perform a permutation test of the difference of means between two independent or paired samples.
   - Added `categorical_summary_stats` to calculate summary statistics of categorical variables.
 
 ### Enhanced

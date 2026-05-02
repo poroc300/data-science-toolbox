@@ -6,7 +6,10 @@ import pytest
 from dscience_toolbox.core_stats import (
     _cohens_d_independent,
     _cohens_dz_paired,
+    _permutation_stat_independent,
+    _permutation_stat_paired,
     cohens_d,
+    permutation_test_means,
     rank_based_tests,
     t_test,
 )
@@ -75,3 +78,42 @@ def test_rank_based_tests(paired):
     _, pval2 = rank_based_tests(arr1, arr3, paired=paired)
     assert pval1 > 0.1
     assert pval2 < 0.05
+
+
+@pytest.mark.parametrize(
+    "paired, stat_func",
+    [(False, _permutation_stat_independent), (True, _permutation_stat_paired)],
+)
+def test_permutation_stat_functions(permutation_test_arrays, paired, stat_func):
+    """Test the permutation test callables for difference in means."""
+    arr1, arr2, axis = permutation_test_arrays
+    if paired:
+        expected = np.mean(arr1 - arr2, axis=axis)
+    else:
+        expected = np.mean(arr1, axis=axis) - np.mean(arr2, axis=axis)
+    test = stat_func(arr1, arr2, axis=axis)
+    assert np.allclose(expected, test)
+
+
+@pytest.mark.parametrize("paired", (False, True))
+def test_permutation_test_means_basic(permutation_test_arrays, paired):
+    """Test the basic functionality of permutation_test_means."""
+    arr1, arr2, axis = permutation_test_arrays
+    test = permutation_test_means(arr1, arr2, paired=paired, axis=axis, nres=500, seed=0)
+    assert hasattr(test, "statistic")
+    assert hasattr(test, "pvalue")
+    assert np.all((0 <= test.pvalue) & (test.pvalue <= 1))
+
+
+@pytest.mark.parametrize("paired", (False, True))
+def test_permutation_test_means_reproducibility(permutation_test_arrays, paired):
+    """Test reproducibility of permutation_test_means."""
+    arr1, arr2, axis = permutation_test_arrays
+    test1 = permutation_test_means(
+        arr1, arr2, paired=paired, axis=axis, nres=500, seed=42
+    )
+    test2 = permutation_test_means(
+        arr1, arr2, paired=paired, axis=axis, nres=500, seed=42
+    )
+    assert np.allclose(test1.statistic, test2.statistic)
+    assert np.allclose(test1.pvalue, test2.pvalue)
