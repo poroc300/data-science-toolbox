@@ -20,7 +20,7 @@ def barplot(
     ylims=None,
     font_sizes=None,
     rotate_x_labels=0,
-    hlines=None,
+    hline=None,
     annots=None,
     axes_names=None,
     plot_kwargs=None,
@@ -61,13 +61,13 @@ def barplot(
              - "annotations" -> default is 16
     rotate_x_labels : int, optional
         Degree of rotation of x tick labels. The default is 0 (horizontal).
-    hlines : sequence-like, optional
+    hline : sequence-like, optional
         Adds a horizontal line. The default is None (no line). Must be a sequence
         with four elements:
             1. y coordinate to draw the line (int)
             2. line style ('-', '--', '-.', ':') -> see matplotlib docs
             3. line width (int)
-            4. line colour (str). The default is None,
+            4. line colour (str). The default is None
     annots : sequence-like, optional
         Sequence with the labels to be added to the top of each bar. Note that
         labels will be added based on bar order if grp_var=None. If grp_var is
@@ -149,10 +149,10 @@ def barplot(
         ax.set_ylim(*ylims)
 
     # add a basic horizontal line
-    if hlines is not None:
-        if len(hlines) != 4:
-            raise ValueError("hlines must be (y, linestyle, linewidth, color)")
-        y, ls, lw, color = hlines
+    if hline is not None:
+        if len(hline) != 4:
+            raise ValueError("hline must be (y, linestyle, linewidth, color)")
+        y, ls, lw, color = hline
         ax.axhline(y=y, linestyle=ls, linewidth=lw, color=color)
 
     # add annotations

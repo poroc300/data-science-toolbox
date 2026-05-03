@@ -27,6 +27,9 @@ All notable changes to this project will be documented in this file.
   - Added `load_txt` to read .txt files as a list or DataFrame.
   - Added `load_json` to read json files.
 
+- **`visualisation`**
+  - Added `scatterplot` for creation of scatterplots.
+
 ### Enhanced
 - **`core_stats`**
   - Empty columns in `summary_stats` are now explicitly removed to make the output cleaner.
