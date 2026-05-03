@@ -16,6 +16,39 @@ All notable changes to this project will be documented in this file.
 - **Maintenance (Internal Changes)**  
   For refactoring, dependency updates, code cleanup, documentation improvements, and other non-functional changes.
 
+## [0.2.0] - 2026/05/03
+Release 0.2.0 expands the library with new statistical tools (including permutation and rank-based tests), improved categorical
+and descriptive summaries, and a new scatterplot function for enhanced visualisation. It also introduces basic I/O utilities 
+for loading text and JSON files. A few plotting inconsistencies were fixed.
+
+### New Features
+- **`core_stats`**
+  - Added `rank_based_tests` to perform non-parametric tests on two samples (Mann-Whitney and Wilcoxon).
+  - Added `permutation_test_means` to perform a permutation test of the difference of means between two independent or paired samples.
+  - Added `categorical_summary_stats` to calculate summary statistics of categorical variables.
+  
+- **`utils`**
+  - Added `load_txt` to read .txt files as a list or DataFrame.
+  - Added `load_json` to read json files.
+
+- **`visualisation`**
+  - Added `scatterplot` for creation of scatterplots.
+
+### Enhanced
+- **`core_stats`**
+  - Empty columns in `summary_stats` are now explicitly removed to make the output cleaner.
+
+### Fixed
+- **`visualisation`**
+  - The `axes_names` argument in `barplot` was not overwriting the labels of the x and y axes.
+  - The font size of annotations in `barplot` was being incorrectly controlled by a deprecated parameter instead of `font_sizes` argument.
+  - Default `seaborn` legend when `grp_var` is set in plotting functions is explicitly removed first before making the legend to avoid potential legend issues.
+  
+### Maintenance
+- **`core_stats`**
+  - Corrected returned output types in docstring of `t_test()`.
+
+
 ## [0.1.0] - 2026/04/26
 Project initialisation. Contains three submodules: **`core_stats`**, **`visualisation`** and **`utils`**. 
 
