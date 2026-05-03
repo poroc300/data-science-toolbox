@@ -240,6 +240,10 @@ def scatterplot(
 
     # create legend
     if grp_var is not None:
+        # remove default seaborn legend
+        if ax.legend_ is not None:
+            ax.legend_.remove()
+            
         handles, labels = ax.get_legend_handles_labels()
         ax.legend(
             handles,

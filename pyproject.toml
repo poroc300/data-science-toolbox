@@ -4,7 +4,7 @@ build-backend = "hatchling.build"
 
 [project]
 name = "data-science-toolbox"
-version = "0.1.0"
+version = "0.2.0"
 description = "Collection of helper functions for machine-learning and statistical analyses"
 readme = "README.md"
 requires-python = ">=3.11"
@@ -56,5 +56,6 @@ quote-style = "double"          # Enforce double quotes
 [tool.pytest.ini_options]
 testpaths = [
     "src/dscience_toolbox/core_stats/tests",
-	"src/dscience_toolbox/utils/tests"
+	"src/dscience_toolbox/utils/tests",
+	"src/dscience_toolbox/visualisation/tests"
 ]
