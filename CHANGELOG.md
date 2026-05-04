@@ -17,8 +17,9 @@ All notable changes to this project will be documented in this file.
   For refactoring, dependency updates, code cleanup, documentation improvements, and other non-functional changes.
 
 ## [0.3.0] - 2026/XX/XX
-- **`core_stats`**
+- **`core_ml`**
   - Added `percent_error` to estimate % error element-wise between two arrays.	
+  - Added `r2_score_adj` to estimate adjusted R2.	
   
 - **`core_stats`**
   - Added `check_normality` to assess if a distribution is normal.	
