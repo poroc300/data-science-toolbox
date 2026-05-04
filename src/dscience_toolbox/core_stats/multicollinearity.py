@@ -19,19 +19,26 @@ def vif(df):
     ----------
     df : DataFrame
         Input DataFrame containing the variables to assess. Non-numeric columns
-        are ignored automatically and rows with any NaN values are dropped before
-        computation.
+        are ignored automatically and rows with any NaN values and constante values
+        are dropped before computation.
 
     Returns
     -------
     DataFrame
-           Single-row DataFrame with the VIF for each numerical variable.
+        Single-row DataFrame with the VIF for each numerical variable.
+           
+    Notes
+    -----
+    Pre-processing
 
     """
-    # get numeric columns and remove nan values
+    # get numeric columns, remove columns with constant and nan values
     df = _validate_pandas_dataframe(df, input_arg="df")
     df_num = df.select_dtypes("number").copy()
     df_num = df_num.dropna(axis=0, how="any")
+    df_num = df_num.loc[:, df_num.nunique() > 1]
+    if df_num.empty:
+        raise ValueError("preprocessing made the input DataFrame empty")
 
     # estimate VIF for each variable (function only accepts numpy arrays)
     arr = df_num.to_numpy().copy()

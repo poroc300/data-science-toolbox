@@ -17,6 +17,7 @@ All notable changes to this project will be documented in this file.
   For refactoring, dependency updates, code cleanup, documentation improvements, and other non-functional changes.
 
 ## [0.3.0] - 2026/XX/XX
+### New Features
 - **`core_ml`**
   - Added `percent_error` to estimate % error element-wise between two arrays.	
   - Added `r2_score_adj` to estimate adjusted R2.	
@@ -26,7 +27,10 @@ All notable changes to this project will be documented in this file.
 	
 - **`utils`**
   - Added `list_files` to list paths of files of one or more extensions.
-
+  
+### Fixed
+- **`core_stats`**
+  - Columns with constant values are now dropped in `vif` to avoid numerical unstability.
 
 ## [0.2.0] - 2026/05/03
 Release 0.2.0 expands the library with new statistical tools (including permutation and rank-based tests), improved categorical
