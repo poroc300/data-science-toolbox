@@ -16,6 +16,11 @@ All notable changes to this project will be documented in this file.
 - **Maintenance (Internal Changes)**  
   For refactoring, dependency updates, code cleanup, documentation improvements, and other non-functional changes.
 
+## [0.3.0] - 2026/XX/XX
+- **`utils`**
+  - Added `list_files` to list paths of files of one or more extensions.
+
+
 ## [0.2.0] - 2026/05/03
 Release 0.2.0 expands the library with new statistical tools (including permutation and rank-based tests), improved categorical
 and descriptive summaries, and a new scatterplot function for enhanced visualisation. It also introduces basic I/O utilities 
