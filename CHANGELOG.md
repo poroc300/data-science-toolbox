@@ -17,6 +17,9 @@ All notable changes to this project will be documented in this file.
   For refactoring, dependency updates, code cleanup, documentation improvements, and other non-functional changes.
 
 ## [0.3.0] - 2026/XX/XX
+- **`core_stats`**
+  - Added `check_normality` to assess if a distribution is normal.	
+	
 - **`utils`**
   - Added `list_files` to list paths of files of one or more extensions.
 

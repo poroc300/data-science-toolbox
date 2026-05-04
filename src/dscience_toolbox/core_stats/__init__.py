@@ -4,6 +4,7 @@ from .inference import (
     _cohens_dz_paired,
     _permutation_stat_independent,
     _permutation_stat_paired,
+    check_normality,
     cohens_d,
     permutation_test_means,
     rank_based_tests,

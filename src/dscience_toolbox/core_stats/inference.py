@@ -1,9 +1,88 @@
 """Statistical inference functions for hypothesis testing."""
 
+import warnings
+
 import numpy as np
-from scipy.stats import mannwhitneyu, permutation_test, ttest_ind, ttest_rel, wilcoxon
+from scipy.stats import (
+    anderson,
+    kurtosis,
+    mannwhitneyu,
+    normaltest,
+    permutation_test,
+    shapiro,
+    skew,
+    ttest_ind,
+    ttest_rel,
+    wilcoxon,
+)
 
 from dscience_toolbox.utils import _to_numpy
+
+
+def check_normality(arr):
+    """
+    Assess the normality of a distribution using three complementary normality
+    tests (Shapiro-Wilk, D'Agostino-Pearson, Anderson-Darling) alongside skewness
+    and kurtosis to provide both hypothesis-test results and descriptive diagnostics.
+
+    Parameters
+    ----------
+    arr : array-like
+        Input data. Will be coerced to a 1D numpy array. Accepts also lists and
+        pandas Series.
+
+    Returns
+    -------
+    dict
+        For the three tests, the dict will contain the keys "stat" and "pval"
+        which are the statistic value and p-value, respectively. For kurtosis and
+        skeweness only their respective value is shown.
+
+    Notes
+    -----
+    These are more details about the tests and statistics used in this function:
+        - Shapiro-Wilk: Most powerful for small samples (n < 50).
+        - D'Agostino-Pearson: Combines skewness and kurtosis into a single
+        chi-squared statistic.
+        - Anderson-Darling: Sensitive to tail deviations. Suitable for medium
+        to large samples.
+        - kurtosis: a value of zero indicates similar tail behaviour to a normal
+        distribution. Positive values indicate heavier tails, negative values
+        indicate lighter tails.
+        - skewness:  measure of asymmetry. 0 indicates a symmetric distribution.
+        Positive values indicate a right-skewed distribution, negative values
+        indicate left-skewed.
+
+    All tests become hypersensitive when sample sizes are very large (e.g. > 2000).
+    In those casesm consider using skewness and kurtosis values combined with visual
+    inspection (e.g. Q-Q plot) instead. A warning is printed when the sample size
+    is > 2000.
+
+    """
+    # coerce to numpy array and flat array to 1D
+    arr = _to_numpy(arr, ndim=1)
+    if arr.size > 2000:
+        warnings.warn("the sample size is high, tests may be oversensitive")
+
+    # dict to store results of tests
+    results = {}
+
+    # Shapiro-Wilk (good for small samples n < 50)
+    stat, p = shapiro(arr)
+    results["shapiro_wilk"] = {"stat": stat, "pval": p}
+
+    # D'Agostino-Pearson omnibus test
+    stat, p = normaltest(arr)
+    results["dagostino_pearson"] = {"stat": stat, "pval": p}
+
+    # Anderson-Darling test
+    stat, p = anderson(arr, dist="norm", method="interpolate")
+    results["anderson_darling"] = {"stat": stat, "pval": p}
+
+    # skewness and kurtosis
+    results["skewness"] = skew(arr)
+    results["kurtosis"] = kurtosis(arr)
+    return results
 
 
 def _cohens_d_independent(arr1, arr2):
