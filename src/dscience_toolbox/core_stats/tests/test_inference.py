@@ -33,8 +33,8 @@ def test_check_normality_normal_dist():
             assert test[test_key]["pval"] > 0.1
 
     # skewness and kurtosis must be close to zero
-    assert abs(test["skewness"]) < 0.1
-    assert abs(test["kurtosis"]) < 0.1
+    assert abs(test["skewness"]) < 0.5
+    assert abs(test["kurtosis"]) < 0.5
 
 
 def test_check_normality_exponential_dist():

@@ -18,6 +18,9 @@ All notable changes to this project will be documented in this file.
 
 ## [0.3.0] - 2026/XX/XX
 - **`core_stats`**
+  - Added `percent_error` to estimate % error element-wise between two arrays.	
+  
+- **`core_stats`**
   - Added `check_normality` to assess if a distribution is normal.	
 	
 - **`utils`**

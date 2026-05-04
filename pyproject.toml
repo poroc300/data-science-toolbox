@@ -4,7 +4,7 @@ build-backend = "hatchling.build"
 
 [project]
 name = "data-science-toolbox"
-version = "0.2.0"
+version = "0.3.0"
 description = "Collection of helper functions for machine-learning and statistical analyses"
 readme = "README.md"
 requires-python = ">=3.11"
