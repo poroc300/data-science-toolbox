@@ -1,5 +1,7 @@
 """Unit tests for functions in inference.py."""
 
+from contextlib import suppress
+
 import numpy as np
 import pytest
 
@@ -8,6 +10,7 @@ from dscience_toolbox.core_stats import (
     _cohens_dz_paired,
     _permutation_stat_independent,
     _permutation_stat_paired,
+    check_normality,
     cohens_d,
     permutation_test_means,
     rank_based_tests,
@@ -16,6 +19,38 @@ from dscience_toolbox.core_stats import (
 
 # set random seed number
 np.random.seed(7)
+
+
+def test_check_normality_normal_dist():
+    """Test when input array exhibits normal distribution."""
+    # create test array and get result
+    arr = np.random.normal(50, 5, size=100)
+    test = check_normality(arr)
+
+    # check p-value is > 0.1 for normality tests
+    for test_key, values in test.items():
+        with suppress(IndexError):  # will skip kurtosis and skewness
+            assert test[test_key]["pval"] > 0.1
+
+    # skewness and kurtosis must be close to zero
+    assert abs(test["skewness"]) < 0.5
+    assert abs(test["kurtosis"]) < 0.5
+
+
+def test_check_normality_exponential_dist():
+    """Test when input array exhibits a non-normal distribution."""
+    # create test array and get result
+    arr = np.random.exponential(50, size=100)
+    test = check_normality(arr)
+
+    # check p-value is < 0.05 for normality tests
+    for test_key, values in test.items():
+        with suppress(IndexError):  # will skip kurtosis and skewness
+            assert test[test_key]["pval"] < 0.05
+
+    # skewness and kurtosis must be higher
+    assert abs(test["skewness"]) > 0.1
+    assert abs(test["kurtosis"]) > 0.1
 
 
 def test_cohens_d_independent(cohens_d_test_arrays):

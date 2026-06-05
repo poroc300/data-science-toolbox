@@ -1,7 +1,7 @@
 """Functions to create continuous plots."""
 
-import numpy as np
 import matplotlib.pyplot as plt
+import numpy as np
 import seaborn as sns
 from numpy.polynomial import Polynomial
 

@@ -80,7 +80,7 @@ def categorical_summary_stats(df, subset=None):
     """
     Descriptive statistics for categorical columns. Outputs count, missing value
     statistics, number of unique categories, and the most frequent category.
-    
+
     Parameters
     ----------
     df : DataFrame
