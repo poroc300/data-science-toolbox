@@ -16,7 +16,10 @@ All notable changes to this project will be documented in this file.
 - **Maintenance (Internal Changes)**  
   For refactoring, dependency updates, code cleanup, documentation improvements, and other non-functional changes.
 
-## [0.3.0] - 2026/XX/XX
+## [0.3.0] - 2026/06/05
+Release 0.3.0 adds new machine learning and statistical utilities, including percentage error, adjusted R², and normality checks, 
+along with a file listing helper. It also improves the stability of vif by automatically removing constant-value columns.
+
 ### New Features
 - **`core_ml`**
   - Added `percent_error` to estimate % error element-wise between two arrays.	
