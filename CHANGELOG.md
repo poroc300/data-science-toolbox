@@ -16,6 +16,14 @@ All notable changes to this project will be documented in this file.
 - **Maintenance (Internal Changes)**  
   For refactoring, dependency updates, code cleanup, documentation improvements, and other non-functional changes.
 
+## [0.4.0] - 2026/XX/XX
+Release 0.4.0
+
+### Maintenance
+- **`core_stats`**
+  - Moved effect size functions and data diagnostics functions (e.g. multicollinearity) to the scripts ```effect_sizes.py``` and ```diagnostics.py```, respectively.
+
+
 ## [0.3.0] - 2026/06/05
 Release 0.3.0 adds new machine learning and statistical utilities, including percentage error, adjusted R², and normality checks, 
 along with a file listing helper. It also improves the stability of vif by automatically removing constant-value columns.

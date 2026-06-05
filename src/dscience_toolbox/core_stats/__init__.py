@@ -1,13 +1,10 @@
 from .descriptive import categorical_summary_stats, column_dtypes, summary_stats
+from .diagnostics import check_normality, correlation, vif
+from .effect_sizes import _cohens_d_independent, _cohens_dz_paired, cohens_d
 from .inference import (
-    _cohens_d_independent,
-    _cohens_dz_paired,
     _permutation_stat_independent,
     _permutation_stat_paired,
-    check_normality,
-    cohens_d,
     permutation_test_means,
     rank_based_tests,
     t_test,
 )
-from .multicollinearity import correlation, vif
