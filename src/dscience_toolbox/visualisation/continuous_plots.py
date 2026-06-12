@@ -236,7 +236,7 @@ def scatterplot(
         if len(vline) != 4:
             raise ValueError("vlines must be (x, linestyle, linewidth, color)")
         x, ls, lw, color = vline
-        ax.axhline(y=x, linestyle=ls, linewidth=lw, color=color)
+        ax.axvline(y=x, linestyle=ls, linewidth=lw, color=color)
 
     # create legend
     if grp_var is not None:
