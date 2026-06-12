@@ -69,10 +69,10 @@ def barplot(
             3. line width (int)
             4. line colour (str). The default is None
     annots : sequence-like, optional
-        Sequence with the labels to be added to the top of each bar. Annotations 
-        follow the order of rendered bar. If grp_var is supplied, the labels will 
-        be annotated based on group order. For example, assume grp_var has two 
-        categories (4 bars). The user must supply first all labels for the first 
+        Sequence with the labels to be added to the top of each bar. Annotations
+        follow the order of rendered bar. If grp_var is supplied, the labels will
+        be annotated based on group order. For example, assume grp_var has two
+        categories (4 bars). The user must supply first all labels for the first
         category, then for second, etc... The default is None (no annotation of labels).
     axes_names : sequence-like, optional
         Must be a sequence of two elements to set the names of the x and y
@@ -180,7 +180,7 @@ def barplot(
         # remove default seaborn legend
         if ax.legend_ is not None:
             ax.legend_.remove()
-            
+
         handles, labels = ax.get_legend_handles_labels()
         ax.legend(
             handles,
@@ -340,7 +340,7 @@ def boxplot(
         # remove default seaborn legend
         if ax.legend_ is not None:
             ax.legend_.remove()
-            
+
         handles, labels = ax.get_legend_handles_labels()
         ax.legend(
             handles,

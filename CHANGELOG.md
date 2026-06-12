@@ -19,6 +19,13 @@ All notable changes to this project will be documented in this file.
 ## [0.4.0] - 2026/XX/XX
 Release 0.4.0
 
+### New Features
+- Added `histplot` for creation of histograms.
+
+### Fixed
+- **`visualisation`**
+  - Fixed the ```vline``` argument in function ```scatterplot``` which was plotting an horizontal line instead of a vertical one.
+
 ### Maintenance
 - **`core_stats`**
   - Moved effect size functions and data diagnostics functions (e.g. multicollinearity) to the scripts ```effect_sizes.py``` and ```diagnostics.py```, respectively.
