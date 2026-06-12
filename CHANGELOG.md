@@ -20,7 +20,8 @@ All notable changes to this project will be documented in this file.
 Release 0.4.0
 
 ### New Features
-- Added `histplot` for creation of histograms.
+- **`visualisation`**
+  - Added `histplot` for creation of histograms.
 
 ### Fixed
 - **`visualisation`**
@@ -33,6 +34,7 @@ Release 0.4.0
 - **`core_stats`**
   - Moved effect size functions and data diagnostics functions (e.g. multicollinearity) to the scripts ```effect_sizes.py``` and ```diagnostics.py```, respectively.
   - Added more unit tests to script ```descriptive.py```.
+  - Added more unit tests to script ```diagnostics.py```.
   
 
 ## [0.3.0] - 2026/06/05
