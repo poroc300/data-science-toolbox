@@ -66,10 +66,10 @@ def rfloor(arr, dec=None):
         if not isinstance(dec, int) or dec < 0:
             raise TypeError("dec must be None or a positive int")
 
-    # default to np.ceil
+    # default to np.floor
     if dec is None or dec == 0:
         return np.floor(arr)
 
-    # decimal ceil rounding
+    # decimal floor rounding
     factor = 10**dec
     return np.floor(arr * factor) / factor
