@@ -32,7 +32,8 @@ Release 0.4.0
 ### Maintenance
 - **`core_stats`**
   - Moved effect size functions and data diagnostics functions (e.g. multicollinearity) to the scripts ```effect_sizes.py``` and ```diagnostics.py```, respectively.
-
+  - Added more unit tests to script ```descriptive.py```.
+  
 
 ## [0.3.0] - 2026/06/05
 Release 0.3.0 adds new machine learning and statistical utilities, including percentage error, adjusted R², and normality checks, 
