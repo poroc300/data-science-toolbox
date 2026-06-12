@@ -26,6 +26,9 @@ Release 0.4.0
 - **`visualisation`**
   - Fixed the ```vline``` argument in function ```scatterplot``` which was plotting an horizontal line instead of a vertical one.
 
+- **`core_stats`**
+  - ```cohens_d``` now returns zero instead of raising a ```ZeroDivisionError``` in edge cases where the denominator of the formulas were zero.
+
 ### Maintenance
 - **`core_stats`**
   - Moved effect size functions and data diagnostics functions (e.g. multicollinearity) to the scripts ```effect_sizes.py``` and ```diagnostics.py```, respectively.

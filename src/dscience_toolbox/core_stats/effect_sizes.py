@@ -31,6 +31,8 @@ def _cohens_d_independent(arr1, arr2):
 
     # sum the weighted variances and divide by total degrees of freedom
     pooled_var = (weighted_var1 + weighted_var2) / (n1 + n2 - 2)
+    if pooled_var == 0:  # avoid ZeroDivisionError
+        return 0
 
     # square root to get back to SD units
     pooled_sd = np.sqrt(pooled_var)
@@ -58,7 +60,10 @@ def _cohens_dz_paired(arr1, arr2):
     """
     assert arr1.size == arr2.size, "unequal size of input arrays"
     diff = arr1 - arr2
-    return np.mean(diff) / np.std(diff, ddof=1)
+    sd_diff = np.std(diff, ddof=1)
+    if sd_diff == 0:  # avoid ZeroDivisionError
+        return 0
+    return np.mean(diff) / sd_diff
 
 
 def cohens_d(arr1, arr2, method="independent"):
