@@ -16,8 +16,11 @@ All notable changes to this project will be documented in this file.
 - **Maintenance (Internal Changes)**  
   For refactoring, dependency updates, code cleanup, documentation improvements, and other non-functional changes.
 
-## [0.4.0] - 2026/XX/XX
-Release 0.4.0
+
+## [0.4.0] - 2026/06/12
+Release 0.4.0 introduces a new histogram visualisation function and new utility functions for decimal ceiling and floor rounding. It also improves plotting 
+argument validation, fixes issues in ```scatterplot``` and ```cohens_d```, reorganizes modules for better maintainability, and expands test coverage across 
+descriptive statistics and diagnostics functionality.
 
 ### New Features
 - **`visualisation`**
