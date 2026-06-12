@@ -22,6 +22,10 @@ Release 0.4.0
 ### New Features
 - **`visualisation`**
   - Added `histplot` for creation of histograms.
+  
+- **`utils`**
+  - Added `rceil` to perform ceil rounding with decimal precision.
+  - Added `rfloor` to perform floor rounding with decimal precision.
 
 ### Enhanced
 - **`visualisation`**
@@ -35,6 +39,9 @@ Release 0.4.0
   - ```cohens_d``` now returns zero instead of raising a ```ZeroDivisionError``` in edge cases where the denominator of the formulas were zero.
 
 ### Maintenance
+- **`data_io`**
+  - Create new submodule ```data_io``` to store functions that handle data and files. 
+
 - **`core_stats`**
   - Moved effect size functions and data diagnostics functions (e.g. multicollinearity) to the scripts ```effect_sizes.py``` and ```diagnostics.py```, respectively.
   - Added more unit tests to script ```descriptive.py```.
