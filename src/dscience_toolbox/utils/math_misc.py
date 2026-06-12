@@ -15,8 +15,7 @@ def rceil(arr, dec=None):
         Input values.
     dec : int or None, optional
         Number of decimal places to round to. If None or 0, values are
-        rounded up to the nearest integer using numpy.ceil. Positive values
-        round up to the specified number of decimal places.
+        rounded up to the nearest integer using numpy.ceil.
 
     Returns
     -------
@@ -51,8 +50,7 @@ def rfloor(arr, dec=None):
         Input values.
     dec : int or None, optional
         Number of decimal places to round to. If None or 0, values are
-        rounded down to the nearest integer using numpy.floor. Positive values
-        round down to the specified number of decimal places.
+        rounded down to the nearest integer using numpy.floor.
 
     Returns
     -------
