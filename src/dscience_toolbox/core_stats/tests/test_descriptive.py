@@ -1,6 +1,7 @@
 """Unit tests for functions in descriptive.py."""
 
 import numpy as np
+import pandas as pd
 import pytest
 from numpy.testing import assert_allclose
 
@@ -23,6 +24,19 @@ def test_column_dtypes(titanic_df):
         assert np.all(titanic_df[cols].dtypes == _dtype)
 
 
+def test_column_dtypes_extension_types():
+    """Test that modern pandas dtypes are detected."""
+    df = pd.DataFrame(
+        {
+            "a": pd.Series([1, 2], dtype="Int64"),
+            "b": pd.Series(["x", "y"], dtype="string"),
+        }
+    )
+    test_df = column_dtypes(df)
+    assert test_df["Int64"] == ["a"]
+    assert test_df["string"] == ["b"]
+
+
 def test_summary_stats_output_columns(titanic_df):
     """Test format of the output DataFrame."""
     # test returned columns are numeric only
@@ -37,6 +51,21 @@ def test_summary_stats_output_columns(titanic_df):
     # test if output includes only desired column subset
     test_df_subset = summary_stats(titanic_df, subset=["age", "fare"])
     assert sorted(test_df_subset.columns) == ["age", "fare"]
+
+
+def test_summary_stats_custom_percentiles(sample_df):
+    """Test function returns custom percentiles."""
+    test_df = summary_stats(sample_df, percentiles=[0.1, 0.9])
+    assert "10%" in test_df.index
+    assert "90%" in test_df.index
+    assert "2.5%" not in test_df.index
+
+
+def test_summary_stats_cv_zero_mean():
+    """Test CV is NaN if mean is zero."""
+    df = pd.DataFrame({"col1": [-1, 1]})
+    test_df = summary_stats(df)
+    assert np.isnan(test_df.loc["CV_%", "col1"])
 
 
 def test_summary_stats_remove_nan_cols(sample_df):
@@ -64,6 +93,12 @@ def test_summary_stats_no_numeric_error(titanic_df):
     input_df = titanic_df.select_dtypes(exclude="number")
     with pytest.raises(ValueError, match="no numeric columns found"):
         summary_stats(input_df)
+
+
+def test_summary_stats_invalid_subset_error(titanic_df):
+    """Test that subset arg was supplied with a non-numeric column."""
+    with pytest.raises(ValueError, match="columns not found or non-numeric"):
+        summary_stats(titanic_df, subset=["age", "sex"])
 
 
 def test_categorical_summary_stats_output_columns(titanic_df):
@@ -102,8 +137,21 @@ def test_categorical_summary_stats_output_values(titanic_df):
     assert np.all(test_df.loc["missing":"missing_%", "embark_town"] > 0)
 
 
+def test_categorical_summary_stats_remove_nan_cols():
+    """Test that columns with only NaN values are discarded."""
+    df = pd.DataFrame({"cat1": ["a", "b"], "cat2": [np.nan] * 2})
+    test_df = categorical_summary_stats(df)
+    assert "cat2" not in test_df.columns
+
+
 def test_categorical_summary_stats_no_category_error(titanic_df):
     """Test that an error is raised when no categorical columns are in the input"""
     input_df = titanic_df.select_dtypes(include="number")
     with pytest.raises(ValueError, match="no categorical columns found"):
         categorical_summary_stats(input_df)
+
+
+def test_categorical_summary_stats_invalid_subset_error(titanic_df):
+    """Test that subset arg was supplied with a non-categorical column."""
+    with pytest.raises(ValueError, match="not found or non-categorical"):
+        categorical_summary_stats(titanic_df, subset=["sex", "age"])

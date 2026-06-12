@@ -5,7 +5,11 @@ import numpy as np
 import seaborn as sns
 from numpy.polynomial import Polynomial
 
-from dscience_toolbox.utils import _check_plotting_inputs, _validate_pandas_dataframe
+from dscience_toolbox.utils import (
+    _check_plotting_inputs,
+    _merge_plot_kwargs,
+    _validate_pandas_dataframe,
+)
 
 # seaborn plot styling
 sns.set_theme()
@@ -132,10 +136,9 @@ def scatterplot(
     }
     if grp_var is not None:
         params["hue"] = grp_var
-    if plot_kwargs is not None:
-        if not isinstance(plot_kwargs, dict):
-            raise TypeError("plot_kwargs must be a dict")
-        params.update(plot_kwargs)
+
+    # merge params and plot_kwargs
+    params = _merge_plot_kwargs(params, plot_kwargs)
 
     # create visualisation
     ax = sns.scatterplot(**params)
@@ -417,10 +420,9 @@ def histplot(
         params["binwidth"] = binwidth
     if grp_var is not None:
         params["hue"] = grp_var
-    if plot_kwargs is not None:
-        if not isinstance(plot_kwargs, dict):
-            raise TypeError("plot_kwargs must be a dict")
-        params.update(plot_kwargs)
+
+    # merge params and plot_kwargs
+    params = _merge_plot_kwargs(params, plot_kwargs)
 
     # create histogram
     ax = sns.histplot(**params)

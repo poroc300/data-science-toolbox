@@ -23,6 +23,10 @@ Release 0.4.0
 - **`visualisation`**
   - Added `histplot` for creation of histograms.
 
+### Enhanced
+- **`visualisation`**
+  - Plotting functions now check if input arguments and ```plot_kwargs``` have duplicated keys, raising an warning. Function's input argument values take precedence over those in ```plot_kwargs```.
+
 ### Fixed
 - **`visualisation`**
   - Fixed the ```vline``` argument in function ```scatterplot``` which was plotting an horizontal line instead of a vertical one.

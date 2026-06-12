@@ -3,7 +3,11 @@
 import matplotlib.pyplot as plt
 import seaborn as sns
 
-from dscience_toolbox.utils import _check_plotting_inputs, _validate_pandas_dataframe
+from dscience_toolbox.utils import (
+    _check_plotting_inputs,
+    _merge_plot_kwargs,
+    _validate_pandas_dataframe,
+)
 
 # seaborn plot styling
 sns.set_theme()
@@ -90,7 +94,6 @@ def barplot(
         and nothing will be returned.
 
     """
-
     # validation of input
     df = _validate_pandas_dataframe(df, input_arg="df")
     required_cols = {xvar, yvar}
@@ -103,10 +106,9 @@ def barplot(
     params = {"x": xvar, "y": yvar, "data": df}
     if grp_var is not None:
         params["hue"] = grp_var
-    if plot_kwargs is not None:
-        if not isinstance(plot_kwargs, dict):
-            raise TypeError("plot_kwargs must be a dict")
-        params.update(plot_kwargs)
+
+    # merge params and plot_kwargs
+    params = _merge_plot_kwargs(params, plot_kwargs)
 
     # create visualisation
     ax = sns.barplot(**params)
@@ -272,7 +274,6 @@ def boxplot(
         only return this object if save_path=None, otherwise an image is created
         and nothing will be returned.
     """
-
     # validation of input
     df = _validate_pandas_dataframe(df, input_arg="df")
     required_cols = {xvar, yvar}
@@ -285,10 +286,9 @@ def boxplot(
     params = {"x": xvar, "y": yvar, "data": df}
     if grp_var is not None:
         params["hue"] = grp_var
-    if plot_kwargs is not None:
-        if not isinstance(plot_kwargs, dict):
-            raise TypeError("plot_kwargs must be a dict")
-        params.update(plot_kwargs)
+
+    # merge params and plot_kwargs
+    params = _merge_plot_kwargs(params, plot_kwargs)
 
     # create visualisation
     ax = sns.boxplot(**params)

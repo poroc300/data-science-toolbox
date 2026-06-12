@@ -3,6 +3,7 @@
 from contextlib import suppress
 
 import numpy as np
+import pandas as pd
 import pytest
 
 from dscience_toolbox.core_stats import check_normality, correlation, vif
@@ -28,6 +29,13 @@ def test_vif_nan(sample_df):
     assert np.all(test_vif_nan != test_vif)
 
 
+def test_vif_empty_after_preprocessing():
+    """Test that error is raised when input is empty after preprocessing."""
+    df = pd.DataFrame({"x1": [1] * 2, "x2": [np.nan] * 2})
+    with pytest.raises(ValueError, match="preprocessing made the input"):
+        vif(df)
+
+
 def test_correlation(sample_df):
     """Test if correlation values are calculated correctly."""
     # test high/low correlation levels
@@ -39,6 +47,18 @@ def test_correlation(sample_df):
 
     # test all keys are returned when method="all"
     assert len(correlation(sample_df, method="all").keys()) == 6
+
+
+def test_correlation_pvalue_diagonal(sample_df):
+    """Test diagonal of p-value matrix is just 1."""
+    results = correlation(sample_df, method="pearson")
+    assert np.all(np.diag(results["pearson_pvalues"]) == 1)
+
+
+def test_correlation_ignores_non_numeric(sample_df):
+    """Test correlation ignores non-numeric columns."""
+    results = correlation(sample_df, method="pearson")
+    assert "x4" not in results["pearson"].columns
 
 
 def test_correlation_invalid_method(sample_df):
@@ -77,3 +97,24 @@ def test_check_normality_exponential_dist():
     # skewness and kurtosis must be higher
     assert abs(test["skewness"]) > 0.1
     assert abs(test["kurtosis"]) > 0.1
+
+
+def test_check_normality_large_sample_warning():
+    """Test warning is raised when sample size is large."""
+    arr = np.random.normal(size=3000)
+    with pytest.warns(UserWarning, match="sample size is high"):
+        check_normality(arr)
+
+
+def test_check_normality_output_structure():
+    """Test all expected keys are returned."""
+    arr = np.random.normal(size=100)
+    results = check_normality(arr)
+    expected_keys = {
+        "shapiro_wilk",
+        "dagostino_pearson",
+        "anderson_darling",
+        "skewness",
+        "kurtosis",
+    }
+    assert set(results.keys()) == expected_keys

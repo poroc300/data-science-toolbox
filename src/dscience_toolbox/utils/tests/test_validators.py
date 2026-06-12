@@ -6,6 +6,7 @@ import pytest
 
 from dscience_toolbox.utils import (
     _check_plotting_inputs,
+    _merge_plot_kwargs,
     _to_numpy,
     _validate_pandas_dataframe,
 )
@@ -71,3 +72,23 @@ def test_check_plotting_inputs(sample_df):
     msg = "missing columns in DataFrame: {'dummy'}"
     with pytest.raises(KeyError, match=msg):
         _check_plotting_inputs(sample_df, {"x1", "x2", "dummy"})
+
+
+@pytest.mark.parametrize(
+    "params, kwargs, expected",
+    (
+        ({"a": 2}, {"b": 10}, {"a": 2, "b": 10}),
+        ({}, {"b": 10}, {"b": 10}),
+        ({"a": 2}, {"a": 5, "b": 10}, {"a": 2, "b": 10}),
+    ),
+)
+def test_merge_plot_kwargs(params, kwargs, expected):
+    """Test the function _merge_plot_kwargs."""
+    test = _merge_plot_kwargs(params, kwargs)
+    assert expected == test
+
+
+def test_merge_plot_kwargs_warning_duplicated():
+    """Test the function _merge_plot_kwargs."""
+    with pytest.warns(UserWarning, match="ignoring values in plot_kwargs"):
+        _merge_plot_kwargs({"a": 2}, {"a": 5, "b": 10})

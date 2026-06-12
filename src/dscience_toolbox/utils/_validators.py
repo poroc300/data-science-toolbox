@@ -105,3 +105,49 @@ def _check_plotting_inputs(df, required_cols):
     missing_cols = set(required_cols) - set(df.columns)
     if missing_cols:
         raise KeyError(f"missing columns in DataFrame: {missing_cols}")
+
+
+def _merge_plot_kwargs(params, plot_kwargs):
+    """
+    Merge user-supplied plotting keyword arguments with internally defined
+    plotting parameters. This function is intended to prevent users from
+    inadvertently overriding parameters that are explicitly controlled by the
+    plotting function while still allowing additional keyword arguments to be
+    passed through to the underlying seaborn library.
+
+    Parameters
+    ----------
+    params : dict
+        Dictionary containing plotting parameters defined internally by the
+        function. These values take precedence over any duplicated keys in
+        ``plot_kwargs``.
+    plot_kwargs : dict or None
+        Additional keyword arguments to pass to the plotting function. If
+        ``None``, ``params`` is returned unchanged.
+
+    Returns
+    -------
+    dict
+        Dictionary containing the merged plotting parameters. A warning is raised
+        if duplicated keys exist between both dict inputs.
+
+    """
+    if plot_kwargs is None:
+        return params
+    if not isinstance(plot_kwargs, dict):
+        raise TypeError("plot_kwargs must be a dict")
+
+    # check for duplicated keys and raise warning if found
+    duplicated = set(params) & set(plot_kwargs)
+    if duplicated:
+        warnings.warn(
+            "ignoring values in plot_kwargs for duplicated parameter(s): "
+            f"{', '.join(sorted(duplicated))}",
+            UserWarning,
+            stacklevel=2,
+        )
+
+    # merge keys (params override plot_kwargs()
+    merged = plot_kwargs.copy()
+    merged.update(params)
+    return merged
