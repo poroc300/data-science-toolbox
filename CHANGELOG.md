@@ -17,6 +17,12 @@ All notable changes to this project will be documented in this file.
   For refactoring, dependency updates, code cleanup, documentation improvements, and other non-functional changes.
 
 
+## [0.4.1] - 2026/XX/XX
+### Enhanced
+- **`visualisation`**
+  - Added argument `colours` to all plotting functions to allow user to set colours directly instead of using argument ```plot_kwargs```.
+
+
 ## [0.4.0] - 2026/06/12
 Release 0.4.0 introduces a new histogram visualisation function and new utility functions for decimal ceiling and floor rounding. It also improves plotting 
 argument validation, fixes issues in ```scatterplot``` and ```cohens_d```, reorganizes modules for better maintainability, and expands test coverage across 

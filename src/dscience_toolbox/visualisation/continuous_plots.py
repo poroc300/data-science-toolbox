@@ -3,6 +3,7 @@
 import matplotlib.pyplot as plt
 import numpy as np
 import seaborn as sns
+from matplotlib.colors import is_color_like
 from numpy.polynomial import Polynomial
 
 from dscience_toolbox.utils import (
@@ -20,8 +21,9 @@ def scatterplot(
     xvar,
     yvar,
     save_path=None,
-    plot_size=(12, 8),
     grp_var=None,
+    colours=None,
+    plot_size=(12, 8),
     title=None,
     xlims=None,
     ylims=None,
@@ -52,12 +54,22 @@ def scatterplot(
         Path to save the plot. The default is None, which won't save any image
         and will return the matplotlib.axes.Axes object for further editing
         if required.
-    plot_size : sequence-like, optional
-        Sequence with the width and height of the plot. The default is (12, 8).
     grp_var : str, optional
         Name of the column in df to group values (equivalent to the "hue" parameter
         in seaborn). If supplied, will trigger the creation of a legend. The default
         is None (don't use any variable).
+    colours : str, tuple, or sequence-like, optional
+        Colour(s) for the points. Behaviour depends on the value provided and if
+        grp_var is supplied:
+            - A single colour recognisable by matplotlib (e.g. "blue", "dodgerblue"
+              "#ff5733", (0.2, 0.4, 0.6)) is passed to sns.scatterplot as argument `color`,
+              applying it uniformly to all points.
+            - Any other string (e.g. "Set2", "viridis") that can be interpreted
+              by color_palette() or sequence (e.g. a list of colours or a seaborn
+              palette object) is passed as `palette`.
+        The default is None (seaborn default colours).
+    plot_size : sequence-like, optional
+        Sequence with the width and height of the plot. The default is (12, 8).
     title : str, optional
         Title of plot. The default is None (no title).
     xlims : sequence-like, optional
@@ -136,6 +148,13 @@ def scatterplot(
     }
     if grp_var is not None:
         params["hue"] = grp_var
+
+    # set parameter for colours
+    if colours is not None:
+        if isinstance(colours, str) and is_color_like(colours):
+            params["color"] = colours
+        else:
+            params["palette"] = colours
 
     # merge params and plot_kwargs
     params = _merge_plot_kwargs(params, plot_kwargs)
@@ -270,8 +289,9 @@ def histplot(
     df,
     xvar,
     save_path=None,
-    plot_size=(12, 8),
     grp_var=None,
+    colours=None,
+    plot_size=(12, 8),
     title=None,
     xlims=None,
     ylims=None,
@@ -303,12 +323,22 @@ def histplot(
         Path to save the plot. The default is None, which won't save any image
         and will return the matplotlib.axes.Axes object for further editing
         if required.
-    plot_size : sequence-like, optional
-        Sequence with the width and height of the plot. The default is (12, 8).
     grp_var : str, optional
         Name of the column in df to group values (equivalent to the "hue" parameter
         in seaborn). If supplied, will trigger the creation of a legend. The default
         is None (don't use any variable).
+    colours : str, tuple, or sequence-like, optional
+        Colour(s) for the histogram bars. Behaviour depends on the value provided and if
+        grp_var is supplied:
+            - A single colour recognisable by matplotlib (e.g. "blue", "dodgerblue"
+              "#ff5733", (0.2, 0.4, 0.6)) is passed to sns.histplot as argument `color`,
+              applying it uniformly to all bars.
+            - Any other string (e.g. "Set2", "viridis") that can be interpreted
+              by color_palette() or sequence (e.g. a list of colours or a seaborn
+              palette object) is passed as `palette`.
+        The default is None (seaborn default colours).
+    plot_size : sequence-like, optional
+        Sequence with the width and height of the plot. The default is (12, 8).
     title : str, optional
         Title of plot. The default is None (no title).
     xlims : sequence-like, optional
@@ -420,6 +450,13 @@ def histplot(
         params["binwidth"] = binwidth
     if grp_var is not None:
         params["hue"] = grp_var
+
+    # set parameter for colours
+    if colours is not None:
+        if isinstance(colours, str) and is_color_like(colours):
+            params["color"] = colours
+        else:
+            params["palette"] = colours
 
     # merge params and plot_kwargs
     params = _merge_plot_kwargs(params, plot_kwargs)
