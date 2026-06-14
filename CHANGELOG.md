@@ -22,6 +22,9 @@ All notable changes to this project will be documented in this file.
 - **`visualisation`**
   - Added argument `colours` to all plotting functions to allow user to set colours directly instead of using argument ```plot_kwargs```.
 
+- **`core_stats`**
+  - Added more unit tests to script ```inference.py``` and some of the unit tests no longer rely on random draws (which caused tests to occasionally fail due to sampling variability).
+  
 
 ## [0.4.0] - 2026/06/12
 Release 0.4.0 introduces a new histogram visualisation function and new utility functions for decimal ceiling and floor rounding. It also improves plotting 
