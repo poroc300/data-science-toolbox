@@ -17,6 +17,14 @@ All notable changes to this project will be documented in this file.
   For refactoring, dependency updates, code cleanup, documentation improvements, and other non-functional changes.
 
 
+## [1.0.0] - 2026/XX/XX
+### Fixed
+- **`core_ml`**
+  - `percent_error` did not raise a ```ValueError``` if `true` was a list and contained zeros.
+  - `r2_score_adj` would raise `TypeError``` if `n_predictors` was an `np.int`. It now validates the input with `numbers.Integral`.
+  - `r2_score_adj` would allow cases where `n_predictors` was below zero. An error is raised is now raised in those cases.
+  
+
 ## [0.4.1] - 2026/06/17
 Release 0.4.1 introduces improved set up of colours in plotting functions and more unit tests in the ```core_stats``` submodule.
 
@@ -24,6 +32,7 @@ Release 0.4.1 introduces improved set up of colours in plotting functions and mo
 - **`visualisation`**
   - Added argument `colours` to all plotting functions to allow user to set colours directly instead of using argument ```plot_kwargs```.
 
+### Maintenance
 - **`core_stats`**
   - Added more unit tests to script ```test_inference.py``` and some of the unit tests no longer rely on random draws (which caused tests to occasionally fail due to sampling variability).
   - Unit tests in script ```test_effect_sizes.py``` no longer rely on random draws (which caused tests to occasionally fail due to sampling variability).
