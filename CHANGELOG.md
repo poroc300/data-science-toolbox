@@ -18,6 +18,9 @@ All notable changes to this project will be documented in this file.
 
 
 ## [1.0.0] - 2026/XX/XX
+### Enhanced
+- **`maths`**
+  - `rceil` and `rfloor` now return a scalar instead of `np.float`.
 
 ### Fixed
 - **`core_ml`**

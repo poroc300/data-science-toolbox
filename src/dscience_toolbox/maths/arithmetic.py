@@ -37,7 +37,8 @@ def rceil(arr, dec=None):
 
     # decimal ceil rounding
     factor = 10**dec
-    return np.ceil(arr * factor) / factor
+    rounded = np.ceil(arr * factor) / factor
+    return rounded.item() if rounded.ndim == 0 else rounded  # scalar returned
 
 
 def rfloor(arr, dec=None):
@@ -72,4 +73,5 @@ def rfloor(arr, dec=None):
 
     # decimal floor rounding
     factor = 10**dec
-    return np.floor(arr * factor) / factor
+    rounded = np.floor(arr * factor) / factor
+    return rounded.item() if rounded.ndim == 0 else rounded  # scalar returned
