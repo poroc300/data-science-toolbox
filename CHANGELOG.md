@@ -18,11 +18,21 @@ All notable changes to this project will be documented in this file.
 
 
 ## [1.0.0] - 2026/XX/XX
+
 ### Fixed
 - **`core_ml`**
   - `percent_error` did not raise a ```ValueError``` if `true` was a list and contained zeros.
   - `r2_score_adj` would raise `TypeError``` if `n_predictors` was an `np.int`. It now validates the input with `numbers.Integral`.
   - `r2_score_adj` would allow cases where `n_predictors` was below zero. An error is raised is now raised in those cases.
+  
+### Maintenance
+- **`maths`**
+  - New submodule `maths` created to store general purpose functions involving mathematical operations. #
+  - The script `math_utils.py` was moved into this submodule and renamed into `arithmetic.py`.
+  
+- **`data_io`**
+  - Script `data_misc.py` was renamed to `paths.py` for improved clarity of its content.
+  - Path input in `list_files` was being unnecessarily coerced twice to `pathlib.PurePath`.
   
 
 ## [0.4.1] - 2026/06/17

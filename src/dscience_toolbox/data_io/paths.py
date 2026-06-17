@@ -1,4 +1,4 @@
-"""Helper functions to perform miscellaneous operations on files and data."""
+"""Helper functions to perform miscellaneous operations on files and paths."""
 
 from pathlib import Path
 
@@ -30,7 +30,7 @@ def list_files(path, extensions, recursive=False):
         extensions = [extensions]
 
     # list files
-    search = Path(path).rglob if recursive else Path(path).glob
+    search = path.rglob if recursive else path.glob
     files = []
     for ext in extensions:
         for file in search(f"*.{ext.lstrip('.')}"):

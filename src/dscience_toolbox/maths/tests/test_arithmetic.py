@@ -1,10 +1,10 @@
-"""Unit tests for functions in math_misc.py."""
+"""Unit tests for functions in arithmetic.py."""
 
 import numpy as np
 import pandas as pd
 import pytest
 
-from dscience_toolbox.utils import rceil, rfloor
+from dscience_toolbox.maths import rceil, rfloor
 
 
 def test_rceil_decimals():

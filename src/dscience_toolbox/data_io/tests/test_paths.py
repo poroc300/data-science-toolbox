@@ -1,4 +1,4 @@
-"""Unit tests for functions in unstructured.py."""
+"""Unit tests for functions in paths.py."""
 
 import json
 import os

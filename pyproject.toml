@@ -4,7 +4,7 @@ build-backend = "hatchling.build"
 
 [project]
 name = "data-science-toolbox"
-version = "0.4.1"
+version = "1.0.0"
 description = "Package with reusable statistical, machine learning, and data analysis utilities for data science workflows."
 readme = "README.md"
 requires-python = ">=3.11"
@@ -12,7 +12,7 @@ license = { text = "MIT" }
 authors = [
     { name = "André Lourenço", email = "andrelourenco300@gmail.com" }
 ]
-keywords = ["data science", "statistics", "machine learning"]
+keywords = ["data science", "statistics", "machine learning", "cloud", "data_viz"]
 classifiers = [
     "Programming Language :: Python :: 3",
     "License :: OSI Approved :: MIT License",
@@ -57,6 +57,9 @@ quote-style = "double"          # Enforce double quotes
 [tool.pytest.ini_options]
 testpaths = [
     "src/dscience_toolbox/core_stats/tests",
+	"src/dscience_toolbox/core_ml/tests",
+	"src/dscience_toolbox/data_io/tests",
+	"src/dscience_toolbox/maths/tests",
 	"src/dscience_toolbox/utils/tests",
 	"src/dscience_toolbox/visualisation/tests"
 ]
