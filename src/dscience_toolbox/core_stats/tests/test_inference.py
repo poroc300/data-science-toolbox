@@ -11,9 +11,6 @@ from dscience_toolbox.core_stats import (
     t_test,
 )
 
-# set random seed number
-np.random.seed(7)
-
 
 @pytest.mark.parametrize("paired", (True, False))
 def test_t_test(paired):
@@ -70,6 +67,19 @@ def test_rank_based_tests_paired_length_mismatch():
     """Test error is raised when input arrays have different shape for Wilcoxon test."""
     with pytest.raises(ValueError, match="must have the same length"):
         rank_based_tests(np.arange(5), np.arange(4), paired=True)
+
+
+@pytest.fixture(params=("1d", "2d"), scope="module")
+def permutation_test_arrays(request):
+    """Fixture that provides both 1D and 2D test arrays for permutation tests."""
+    axis = 0
+    if request.param == "1d":
+        arr1 = np.array([1, 2, 3, 4])
+        arr2 = np.array([1, 1, 1, 1])
+    else:
+        arr1 = np.array([[1, 2], [3, 4]])
+        arr2 = np.array([[1, 1], [1, 1]])
+    return arr1, arr2, axis
 
 
 @pytest.mark.parametrize(

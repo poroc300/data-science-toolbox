@@ -5,7 +5,7 @@ build-backend = "hatchling.build"
 [project]
 name = "data-science-toolbox"
 version = "0.4.1"
-description = "Collection of helper functions for machine-learning and statistical analyses"
+description = "Package with reusable statistical, machine learning, and data analysis utilities for data science workflows."
 readme = "README.md"
 requires-python = ">=3.11"
 license = { text = "MIT" }

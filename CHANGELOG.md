@@ -17,14 +17,17 @@ All notable changes to this project will be documented in this file.
   For refactoring, dependency updates, code cleanup, documentation improvements, and other non-functional changes.
 
 
-## [0.4.1] - 2026/XX/XX
+## [0.4.1] - 2026/06/17
+Release 0.4.1 introduces improved set up of colours in plotting functions and more unit tests in the ```core_stats``` submodule.
+
 ### Enhanced
 - **`visualisation`**
   - Added argument `colours` to all plotting functions to allow user to set colours directly instead of using argument ```plot_kwargs```.
 
 - **`core_stats`**
-  - Added more unit tests to script ```inference.py``` and some of the unit tests no longer rely on random draws (which caused tests to occasionally fail due to sampling variability).
-  
+  - Added more unit tests to script ```test_inference.py``` and some of the unit tests no longer rely on random draws (which caused tests to occasionally fail due to sampling variability).
+  - Unit tests in script ```test_effect_sizes.py``` no longer rely on random draws (which caused tests to occasionally fail due to sampling variability).
+
 
 ## [0.4.0] - 2026/06/12
 Release 0.4.0 introduces a new histogram visualisation function and new utility functions for decimal ceiling and floor rounding. It also improves plotting 

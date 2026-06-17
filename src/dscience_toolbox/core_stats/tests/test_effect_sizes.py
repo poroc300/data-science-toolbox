@@ -6,6 +6,15 @@ import pytest
 from dscience_toolbox.core_stats import _cohens_d_independent, _cohens_dz_paired, cohens_d
 
 
+@pytest.fixture(scope="module")
+def cohens_d_test_arrays():
+    """Fixture to create test arrays for Cohen's d functions."""
+    arr1 = np.arange(1, 101)
+    arr2 = arr1 + np.random.default_rng(42).normal(0, 0.5, 100)
+    arr3 = arr1 * 2
+    return arr1, arr2, arr3
+
+
 def test_cohens_d_independent(cohens_d_test_arrays):
     """Test two-group independent Cohen's d."""
     arr1, arr2, arr3 = cohens_d_test_arrays
