@@ -37,7 +37,7 @@ Homepage = "https://github.com/poroc300/data-science-utils"
 
 # Tells hatchling where your source code lives
 [tool.hatch.build.targets.wheel]
-packages = ["src/dscience_toolbox"]
+packages = ["src/dstools"]
 
 # Ruff linter configuration
 [tool.ruff]

@@ -18,6 +18,7 @@ All notable changes to this project will be documented in this file.
 
 
 ## [1.0.0] - 2026/XX/XX
+
 ### Enhanced
 - **`maths`**
   - `rceil` and `rfloor` now return a scalar instead of `np.float`.
@@ -29,6 +30,9 @@ All notable changes to this project will be documented in this file.
   - `r2_score_adj` would allow cases where `n_predictors` was below zero. An error is raised is now raised in those cases.
   
 ### Maintenance
+- **`package`**
+  - Import name changed from `dscience_toolbox` to `dstools` to make it easier and faster to type in import statements.
+
 - **`maths`**
   - New submodule `maths` created to store general purpose functions involving mathematical operations. #
   - The script `math_utils.py` was moved into this submodule and renamed into `arithmetic.py`.
