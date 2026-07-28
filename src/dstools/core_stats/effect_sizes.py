@@ -2,8 +2,6 @@
 
 import numpy as np
 
-from dstools.utils import _to_numpy
-
 
 def _cohens_d_independent(arr1, arr2):
     """
@@ -94,6 +92,6 @@ def cohens_d(arr1, arr2, method="independent"):
         raise KeyError("invalid method")
 
     # calculate Cohen's d
-    arr1, arr2 = _to_numpy(arr1, ndim=1), _to_numpy(arr2, ndim=1)
+    arr1, arr2 = np.asarray(arr1), np.asarray(arr2)
     cohens_d_func = methods[method]
     return cohens_d_func(arr1, arr2)

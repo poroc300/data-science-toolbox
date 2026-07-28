@@ -5,8 +5,6 @@ from numbers import Integral
 import numpy as np
 from sklearn.metrics import r2_score
 
-from dstools.utils import _to_numpy
-
 
 def percent_error(true, pred, absolute=False):
     """
@@ -31,7 +29,7 @@ def percent_error(true, pred, absolute=False):
         rules.
     """
     # check for zeros in true array
-    true, pred = _to_numpy(true), _to_numpy(pred)
+    true, pred = np.asarray(true), np.asarray(pred)
     if np.any(true == 0):
         raise ValueError("true contains zeros (percent error is undefined)")
 
@@ -63,7 +61,7 @@ def r2_score_adj(true, pred, n_predictors):
 
     """
     # coerce to numpy arrays and get sample size
-    true, pred = _to_numpy(true), _to_numpy(pred)
+    true, pred = np.asarray(true), np.asarray(pred)
     if true.shape != pred.shape:
         raise ValueError("true and pred arrays must have the same shape")
 

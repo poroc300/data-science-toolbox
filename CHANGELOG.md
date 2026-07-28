@@ -31,20 +31,23 @@ All notable changes to this project will be documented in this file.
 - **`core_ml`**
   - `percent_error` did not raise a ```ValueError``` if `true` was a list and contained zeros.
   - `r2_score_adj` would raise `TypeError``` if `n_predictors` was an `np.int`. It now validates the input with `numbers.Integral`.
-  - `r2_score_adj` would allow cases where `n_predictors` was below zero. An error is raised is now raised in those cases.
+  - `r2_score_adj` would allow cases where `n_predictors` was below zero. An error is raised in those cases.
   
 ### Maintenance
 - **`package`**
   - Import name changed from `dscience_toolbox` to `dstools` to make it easier and faster to type in import statements.
 
 - **`maths`**
-  - New submodule `maths` created to store general purpose functions involving mathematical operations. #
+  - New submodule `maths` created to store general purpose functions involving mathematical operations.
   - The script `math_utils.py` was moved into this submodule and renamed into `arithmetic.py`.
   
 - **`data_io`**
   - Script `data_misc.py` was renamed to `paths.py` for improved clarity of its content.
   - Path input in `list_files` was being unnecessarily coerced twice to `pathlib.PurePath`.
-  
+ 
+- **`utils`**
+  - Removed `_to_numpy.py` to coerce input array-like objects to `numpy` arrays. That process relies now on ```np.asarray```.
+
 
 ## [0.4.1] - 2026/06/17
 Release 0.4.1 introduces improved set up of colours in plotting functions and more unit tests in the ```core_stats``` submodule.

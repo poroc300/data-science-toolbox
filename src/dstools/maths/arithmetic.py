@@ -2,8 +2,6 @@
 
 import numpy as np
 
-from dstools.utils import _to_numpy
-
 
 def rceil(arr, dec=None):
     """
@@ -24,7 +22,7 @@ def rceil(arr, dec=None):
 
     """
     # coerce to numpy object
-    arr = _to_numpy(arr)
+    arr = np.asarray(arr)
 
     # invalid dec values
     if dec is not None:
@@ -60,7 +58,7 @@ def rfloor(arr, dec=None):
 
     """
     # coerce to numpy object
-    arr = _to_numpy(arr)
+    arr = np.asarray(arr)
 
     # invalid dec values
     if dec is not None:

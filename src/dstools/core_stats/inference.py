@@ -9,8 +9,6 @@ from scipy.stats import (
     wilcoxon,
 )
 
-from dstools.utils import _to_numpy
-
 
 def t_test(arr1, arr2, paired=False, alternative="two-sided", **kwargs):
     """
@@ -41,7 +39,7 @@ def t_test(arr1, arr2, paired=False, alternative="two-sided", **kwargs):
     TtestResult
         Class which contains the "statistic" and "pvalue" attributes.
     """
-    arr1, arr2 = _to_numpy(arr1), _to_numpy(arr2)
+    arr1, arr2 = np.asarray(arr1), np.asarray(arr2)
     if paired:
         if arr1.size != arr2.size:
             msg = "both samples must have the same length in a paired t-test"
@@ -79,7 +77,7 @@ def rank_based_tests(arr1, arr2, paired=False, alternative="two-sided", **kwargs
     WilcoxonResult or MannwhitneyuResult
         Classes which contain the "statistic" and "pvalue" attributes.
     """
-    arr1, arr2 = _to_numpy(arr1), _to_numpy(arr2)
+    arr1, arr2 = np.asarray(arr1), np.asarray(arr2)
     if paired:
         if arr1.size != arr2.size:
             msg = "both samples must have the same length in a Wilcoxon test"
@@ -181,7 +179,7 @@ def permutation_test_means(
        - ``pvalue`` : p-value of the test
        - ``null_distribution`` : array of resampled statistics (if available)
     """
-    arr1, arr2 = _to_numpy(arr1), _to_numpy(arr2)
+    arr1, arr2 = np.asarray(arr1), np.asarray(arr2)
 
     # permutation test for paired sample statistics
     if paired:

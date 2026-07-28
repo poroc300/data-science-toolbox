@@ -17,7 +17,7 @@ from scipy.stats import (
 )
 from statsmodels.stats.outliers_influence import variance_inflation_factor
 
-from dstools.utils import _to_numpy, _validate_pandas_dataframe
+from dstools.utils import _validate_pandas_dataframe
 
 
 def vif(df):
@@ -130,8 +130,7 @@ def check_normality(arr):
     Parameters
     ----------
     arr : array-like
-        Input data. Will be coerced to a 1D numpy array. Accepts also lists and
-        pandas Series.
+        Input data. Must be a 1D sequence.
 
     Returns
     -------
@@ -161,8 +160,10 @@ def check_normality(arr):
     is > 2000.
 
     """
-    # coerce to numpy array and flat array to 1D
-    arr = _to_numpy(arr, ndim=1)
+    # coerce to numpy array
+    arr = np.asarray(arr)
+    if arr.ndim != 1:
+        raise ValueError("arr must be a 1D array-like")
     if arr.size > 2000:
         warnings.warn("the sample size is high, tests may be oversensitive")
 
