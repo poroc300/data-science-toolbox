@@ -7,7 +7,7 @@ from scipy.stats import (
     wilcoxon,
 )
 
-from dstools.core_stats import _ttest_ind, _ttest_paired
+from dstools.core_stats._parametric import _ttest_ind, _ttest_paired
 
 
 def t_test(
@@ -75,10 +75,8 @@ def t_test(
               (paired samples).
             * "pvalue" : p-value of the test.
     """
-    # coerce to numpy arrays
     arr1 = np.asarray(arr1)
     arr2 = np.asarray(arr2)
-
     if paired:
         return _ttest_paired(arr1, arr2, alternative, ci, axis)
     else:

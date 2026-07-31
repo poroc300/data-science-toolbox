@@ -3,7 +3,7 @@
 import numpy as np
 from scipy.stats import ttest_ind, ttest_rel
 
-from dstools.core_stats import _cohens_d_independent, _cohens_dz_paired
+from dstools.core_stats._effect_sizes import _cohens_d_independent, _cohens_dz_paired
 
 
 def _ttest_ind(arr1, arr2, assume_equal_variance, alternative, ci, axis):
@@ -64,7 +64,7 @@ def _ttest_ind(arr1, arr2, assume_equal_variance, alternative, ci, axis):
     return {
         "statistic": result.statistic,
         "estimate": estimate,
-        "ci": ci,
+        "ci": (ci.low, ci.high),
         "effect_size": effect_size,
         "pvalue": result.pvalue,
     }
@@ -127,7 +127,7 @@ def _ttest_paired(arr1, arr2, alternative, ci, axis):
     return {
         "statistic": result.statistic,
         "estimate": estimate,
-        "ci": ci,
+        "ci": (ci.low, ci.high),
         "effect_size": effect_size,
         "pvalue": result.pvalue,
     }
