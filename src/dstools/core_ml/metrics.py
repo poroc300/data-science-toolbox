@@ -58,7 +58,6 @@ def r2_score_adj(true, pred, n_predictors):
     float or ndarray
         Adjusted R² score value or an array with multiple adjusted R² values
         in case the input arrays have multiple columns.
-
     """
     # coerce to numpy arrays and get sample size
     true, pred = np.asarray(true), np.asarray(pred)
