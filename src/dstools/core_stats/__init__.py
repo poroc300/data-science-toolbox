@@ -1,4 +1,5 @@
 from ._effect_sizes import _cohens_d_independent, _cohens_dz_paired
+from ._parametric import _ttest_ind, _ttest_paired
 from .descriptive import categorical_summary_stats, column_dtypes, summary_stats
 from .diagnostics import check_normality, correlation, vif
 from .inference import (

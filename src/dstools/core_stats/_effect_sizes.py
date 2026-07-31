@@ -20,8 +20,8 @@ def _cohens_d_independent(arr1, arr2, axis=0):
     arr2 : ndarray
         1D or 2D array containing observations from the second sample
     axis : int, optional
-        Axis corresponding to observations. If 0 (default), compute one Cohen's d
-        per column. If 1, compute one Cohen's d per row.
+        Axis corresponding to observations. If ``axis=0`` (default), compute one Cohen's d
+        per column. If ``axis=1``, compute one Cohen's d per row.
 
     Returns
     -------
@@ -67,8 +67,8 @@ def _cohens_dz_paired(arr1, arr2, axis=0):
     arr2 : ndarray
         1D or 2D array containing observations from the second condition.
     axis : int, optional
-        Axis corresponding to observations. If 0 (default), compute one Cohen's
-        dz per column. If 1, compute one Cohen's dz per row.
+        Axis corresponding to observations. If ``axis=0`` (default), compute one Cohen's
+        dz per column. If ``axis=1``, compute one Cohen's dz per row.
 
     Returns
     -------

@@ -4,48 +4,85 @@ import numpy as np
 from scipy.stats import (
     mannwhitneyu,
     permutation_test,
-    ttest_ind,
-    ttest_rel,
     wilcoxon,
 )
 
+from dstools.core_stats import _ttest_ind, _ttest_paired
 
-def t_test(arr1, arr2, paired=False, alternative="two-sided", **kwargs):
+
+def t_test(
+    arr1,
+    arr2,
+    paired=False,
+    assume_equal_variance=False,
+    alternative="two-sided",
+    ci=0.95,
+    axis=0,
+):
     """
-    Perform a t-test (independent or paired) of difference of means between two
-    samples. This function wraps scipy.stats.ttest_ind and scipy.stats.ttest_rel.
-    To be used when samples are normally distributed.
+    Perform an independent- or paired-samples t-test.
+
+    This function compares the means of two samples under the assumption that
+    the data are approximately normally distributed. Depending on the value of
+    ``paired``, either an independent-samples t-test or a paired-samples t-test
+    is performed. In addition to the hypothesis test, the function returns the
+    estimated mean difference, a confidence interval for the difference,
+    Cohen's effect size, and the corresponding p-value.
 
     Parameters
     ----------
     arr1 : array-like
-        Array of the first sample (before sample in case of paired=True).
+        Array containing observations from the first sample (or first paired
+        measurement if ``paired=True``).
     arr2 : array-like
-        Array of the second sample (after sample in case of paired=True).
+        Array containing observations from the second sample (or second paired
+        measurement if ``paired=True``).
     paired : bool, optional
-        Perform an independent t-test if False (default) or a paired t-test if
-        True.
-    alternative : str, optional
-        Defines the alternative hypothesis. The available options are:
-            * "two-sided" - the means of the sample distributions are unequal (default).
-            * "less" - the mean of sample 1 is lower than the mean of sample 2.
-            * "greater" - the mean of sample 1 is higher than the mean of sample 2.
-    **kwargs : dict, optional
-       Additional keyword arguments passed to scipy.stats.ttest_ind if paired=False
-       or to scipy.stats.ttest_rel in case paired=True.
+        If False (default), perform an independent-samples t-test. If True,
+        perform a paired-samples t-test.
+    assume_equal_variances : bool, optional
+        Whether to assume that the two populations have equal variances when
+        performing an independent-samples t-test. If False (default), perform
+        Welch's t-test, which does not assume equal population variances and
+        adjusts the degrees of freedom accordingly. If True, perform Student's
+        t-test, which pools the sample variances to estimate a common population
+        variance. This parameter is ignored if ``paired=True``.
+    alternative : {"two-sided", "less", "greater"}, optional
+        Defines the alternative hypothesis.
+            * "two-sided" (default): the population means are unequal.
+            * "less": the mean of sample 1 is less than the mean of sample 2.
+            * "greater": the mean of sample 1 is greater than the mean of sample 2.
+    ci : float, optional
+        Confidence level for the confidence interval of the estimated mean
+        difference. Must be between 0 and 1. The default is 0.95, corresponding
+        to a 95% confidence interval. The interval is computed using the Student's
+        t-distribution. For independent samples, Welch's or Student's t-based
+        intervals are used depending on ``assume_equal_variance``. For paired samples,
+        the interval is based on the t-distribution of the paired differences.
+    axis : int, optional
+        Axis corresponding to observations. If ``axis=0`` (default), compute one
+        t-test per column. If ``axis=1``, compute one t-test per row.
 
     Returns
     -------
-    TtestResult
-        Class which contains the "statistic" and "pvalue" attributes.
+    dict
+        Dictionary containing:
+            * "statistic" : t-test statistic.
+            * "estimate" : Difference in sample means.
+            * "confidence_interval" : Confidence interval for the mean
+              difference.
+            * "effect_size" : Cohen's d (independent samples) or Cohen's dz
+              (paired samples).
+            * "pvalue" : p-value of the test.
     """
-    arr1, arr2 = np.asarray(arr1), np.asarray(arr2)
+    # coerce to numpy arrays
+    arr1 = np.asarray(arr1)
+    arr2 = np.asarray(arr2)
+
     if paired:
-        if arr1.size != arr2.size:
-            msg = "both samples must have the same length in a paired t-test"
-            raise ValueError(msg)
-        return ttest_rel(arr1, arr2, alternative=alternative, **kwargs)
-    return ttest_ind(arr1, arr2, alternative=alternative, **kwargs)
+        return _ttest_paired(arr1, arr2, alternative, ci, axis)
+    else:
+        return _ttest_ind(arr1, arr2, assume_equal_variance, alternative, ci, axis)
 
 
 def rank_based_tests(arr1, arr2, paired=False, alternative="two-sided", **kwargs):
