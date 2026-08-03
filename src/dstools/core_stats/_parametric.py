@@ -42,8 +42,12 @@ def _ttest_ind(arr1, arr2, assume_equal_variance, alternative, ci, axis):
         Dictionary containing:
             * "statistic" : t-test statistic.
             * "estimate" : Difference in sample means.
-            * "ci" : Confidence interval for the mean difference.
-            * "effect_size" : Cohen's d (independent samples)
+            * "ci" : Confidence interval (tuple of lower and upper bounds) for 
+              the mean difference.
+            * "effect_size" : Cohen's d for independent samples, calculated using 
+              the pooled standard deviation. General guidelines (which depend on the 
+              business context or research area): |d| < 0.2 is negligible, 0.2-0.5 
+              is small, 0.5-0.8 is medium, and > 0.8 is large.
             * "pvalue" : p-value of the test.
     """
     # observed difference between sample means
@@ -99,8 +103,12 @@ def _ttest_paired(arr1, arr2, alternative, ci, axis):
         Dictionary containing:
             * "statistic" : t-test statistic.
             * "estimate" : Difference in sample means.
-            * "confidence_interval" : Confidence interval for the mean difference.
-            * "effect_size" : Cohen's dz (paired samples).
+            * "ci" : Confidence interval (tuple of lower and upper bounds) for 
+              the mean difference.
+            * "effect_size" : Cohen's dz for paired samples, calculated using 
+              the standard deviation of difference scores. General guidelines (which 
+              depend on the business context or research area): |dz| < 0.2 is 
+              negligible, 0.2-0.5 is small, 0.5-0.8 is medium, and > 0.8 is large.
             * "pvalue" : p-value of the test.
     """
     # observed difference between sample means
