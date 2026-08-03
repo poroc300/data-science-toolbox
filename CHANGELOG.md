@@ -36,6 +36,7 @@ All notable changes to this project will be documented in this file.
 ### Maintenance
 - **`package`**
   - Import name changed from `dscience_toolbox` to `dstools` to make it easier and faster to type in import statements.
+  - Removed private/internal functions from the public API. Previously exposed via `__init__.py`, these functions are no longer accessible directly from the package namespace.
 
 - **`maths`**
   - New submodule `maths` created to store general purpose functions involving mathematical operations.

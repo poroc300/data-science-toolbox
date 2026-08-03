@@ -6,7 +6,11 @@ import pytest
 from numpy.testing import assert_allclose, assert_almost_equal
 from scipy.stats import ttest_rel
 
-from dstools.core_stats._effect_sizes import _cohens_d_independent, _cohens_dz_paired
+from dstools.core_stats._effect_sizes import (
+    _cohens_d_independent,
+    _cohens_dz_paired,
+    _rank_biserial_correlation_independent,
+)
 
 
 def test_cohens_d_independent_1d(efsize_arrays):
@@ -79,3 +83,18 @@ def test_cohens_dz_paired_axis(efsize_arrays, axis):
     # get result and make assertion
     result = _cohens_dz_paired(arr1, arr2, axis=axis)
     assert_allclose(expected, result)
+
+
+@pytest.mark.parametrize("mann_u, expected", ((2, 0.8), (10, 0), (18, -0.8)))
+def test_rank_biserial_correlation_independent_values(mann_u, expected):
+    """Test rank biserial correlation with different values."""
+    result = _rank_biserial_correlation_independent(mann_u=mann_u, n1=5, n2=4)
+    assert expected == result
+
+
+def test_rank_biserial_correlation_accepts_arrays():
+    """Test that the function accepts an array of U values."""
+    mann_u = np.array([0, 5, 10, 15, 20])
+    expected = np.array([1.0, 0.5, 0.0, -0.5, -1.0])
+    result = _rank_biserial_correlation_independent(mann_u=mann_u, n1=5, n2=4)
+    np.testing.assert_allclose(expected, result)

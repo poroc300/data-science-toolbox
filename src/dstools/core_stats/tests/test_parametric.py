@@ -1,4 +1,4 @@
-"""Unit tests for functions in inference.py."""
+"""Unit tests for functions in _parametric.py."""
 
 import numpy as np
 import pingouin as pg

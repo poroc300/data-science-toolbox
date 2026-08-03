@@ -91,3 +91,34 @@ def _cohens_dz_paired(arr1, arr2, axis=0):
         out=np.zeros_like(mean_diff, dtype=float),
         where=diff_sd != 0,
     )
+
+
+def _rank_biserial_correlation_independent(mann_u, n1, n2):
+    """
+    Calculate rank-biserial correlation for independent samples (Mann-Whitney U).
+
+    This is the effect size for the Mann-Whitney U test, ranging from -1 to 1.
+    Positive values indicate that observations in the first sample tend to be
+    larger than observations in the second sample; negative values indicate
+    the reverse; 0 indicates no tendency either way.
+
+    Parameters
+    ----------
+    mann_u : float or ndarray
+        The Mann-Whitney U statistic, computed with respect to the first
+        sample. If computed along an axis for multiple simultaneous tests,
+        this is an array with that axis removed.
+    n1 : int or ndarray
+        Size of the first sample along the tested axis. Must be broadcastable
+        against ``mann_u``.
+    n2 : int or ndarray
+        Size of the second sample along the tested axis. Must be broadcastable
+        against ``mann_u``.
+
+    Returns
+    -------
+    float or ndarray
+        Rank-biserial correlation coefficient(s), matching the shape of ``mann_u``.
+    """
+    r = 1 - (2 * mann_u) / (n1 * n2)
+    return r

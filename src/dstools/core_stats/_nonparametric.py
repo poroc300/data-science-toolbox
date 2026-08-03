@@ -1,31 +1,8 @@
-"""Private functions to apply nonparametric statistical tests."""
+"""Private functions to apply non-parametric statistical tests."""
 
 import numpy as np
 from scipy.stats import mannwhitneyu, wilcoxon
 from scipy import stats
-
-
-def _rank_biserial_correlation_independent(arr1, arr2):
-    """
-    Calculate rank-biserial correlation for independent samples (Mann-Whitney U).
-    This is the effect size for the Mann-Whitney U test.
-
-    Parameters
-    ----------
-    arr1 : ndarray
-        Array containing observations from the first sample.
-    arr2 : ndarray
-        Array containing observations from the second sample.
-
-    Returns
-    -------
-    float
-        Rank-biserial correlation coefficient.
-    """
-    n1, n2 = arr1.size, arr2.size
-    U = mannwhitneyu(arr1, arr2, alternative='two-sided').statistic
-    r = 1 - (2 * U) / (n1 * n2)
-    return r
 
 
 def _rank_biserial_correlation_paired(arr1, arr2):
@@ -49,7 +26,7 @@ def _rank_biserial_correlation_paired(arr1, arr2):
     n = np.sum(diff != 0)  # number of non-zero differences
     if n == 0:
         return 0
-    T = wilcoxon(arr1, arr2, alternative='two-sided').statistic
+    T = wilcoxon(arr1, arr2, alternative="two-sided").statistic
     r = 1 - (2 * T) / (n * (n + 1))
     return r
 
@@ -74,25 +51,25 @@ def _mannwhitneyu_ci(arr1, arr2, ci=0.95):
         (lower_bound, upper_bound) of the confidence interval.
     """
     n1, n2 = arr1.size, arr2.size
-    
+
     # Calculate all pairwise differences
     differences = arr1[:, np.newaxis] - arr2[np.newaxis, :]
     differences = differences.flatten()
     differences = np.sort(differences)
-    
+
     # Determine the rank indices for confidence interval
     alpha = 1 - ci
     z_alpha = stats.norm.ppf(1 - alpha / 2)
-    
+
     # Calculate critical index using normal approximation
     U_critical = stats.norm.ppf(ci) * np.sqrt((n1 * n2 * (n1 + n2 + 1)) / 12)
     r1 = int(np.ceil((n1 * n2 / 2) - U_critical))
     r2 = int(np.floor((n1 * n2 / 2) + U_critical + 1))
-    
+
     # Ensure indices are within bounds
     r1 = max(0, r1)
     r2 = min(len(differences) - 1, r2)
-    
+
     return (differences[r1], differences[r2])
 
 
@@ -117,37 +94,37 @@ def _wilcoxon_ci(arr1, arr2, ci=0.95):
     """
     diff = arr1 - arr2
     n = np.sum(diff != 0)
-    
+
     if n == 0:
         return (0, 0)
-    
+
     # Calculate all pairwise averages of differences
     pairwise_avg = []
     for i in range(n):
         for j in range(i, n):
             pairwise_avg.append((diff[i] + diff[j]) / 2)
-    
+
     pairwise_avg = np.sort(np.array(pairwise_avg))
-    
+
     # Calculate critical value using normal approximation
     alpha = 1 - ci
     z_alpha = stats.norm.ppf(1 - alpha / 2)
-    
+
     # Calculate critical index
     T_critical = z_alpha * np.sqrt((n * (n + 1) * (2 * n + 1)) / 24)
     r1 = int(np.ceil((n * (n + 1) / 4) - T_critical))
     r2 = int(np.floor((n * (n + 1) / 4) + T_critical + 1))
-    
+
     # Ensure indices are within bounds
     r1 = max(0, r1)
     r2 = min(len(pairwise_avg) - 1, r2)
-    
+
     return (pairwise_avg[r1], pairwise_avg[r2])
 
 
 def _mannwhitneyu(arr1, arr2, alternative, ci, axis):
     """
-    Perform a Mann-Whitney U test. This function compares the distributions of two 
+    Perform a Mann-Whitney U test. This function compares the distributions of two
     independent samples without assuming normality.
 
     Parameters
@@ -191,7 +168,7 @@ def _mannwhitneyu(arr1, arr2, alternative, ci, axis):
     # calculate effect size and confidence interval, return output as dict
     effect_size = _rank_biserial_correlation_independent(arr1, arr2)
     ci_bounds = _mannwhitneyu_ci(arr1, arr2, ci=ci)
-    
+
     return {
         "statistic": result.statistic,
         "estimate": estimate,
@@ -203,7 +180,7 @@ def _mannwhitneyu(arr1, arr2, alternative, ci, axis):
 
 def _wilcoxon(arr1, arr2, alternative, ci, axis):
     """
-    Perform a Wilcoxon signed-rank test. This function compares the distributions 
+    Perform a Wilcoxon signed-rank test. This function compares the distributions
     of two paired samples without assuming normality.
 
     Parameters
@@ -254,7 +231,7 @@ def _wilcoxon(arr1, arr2, alternative, ci, axis):
     # calculate effect size and confidence interval, return output as dict
     effect_size = _rank_biserial_correlation_paired(arr1, arr2)
     ci_bounds = _wilcoxon_ci(arr1, arr2, ci=ci)
-    
+
     return {
         "statistic": result.statistic,
         "estimate": estimate,

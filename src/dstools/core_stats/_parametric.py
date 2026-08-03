@@ -60,11 +60,11 @@ def _ttest_ind(arr1, arr2, assume_equal_variance, alternative, ci, axis):
 
     # calculate effect size and confidence interval, return output as dict
     effect_size = _cohens_d_independent(arr1, arr2, axis=axis)
-    ci = result.confidence_interval(confidence_level=ci)
+    conf_int = result.confidence_interval(confidence_level=ci)
     return {
         "statistic": result.statistic,
         "estimate": estimate,
-        "ci": (ci.low, ci.high),
+        "ci": (conf_int.low, conf_int.high),
         "effect_size": effect_size,
         "pvalue": result.pvalue,
     }
@@ -123,11 +123,11 @@ def _ttest_paired(arr1, arr2, alternative, ci, axis):
 
     # calculate Cohen's dz and confidence interval, return output as dict
     effect_size = _cohens_dz_paired(arr1, arr2, axis=axis)
-    ci = result.confidence_interval(confidence_level=ci)
+    conf_int = result.confidence_interval(confidence_level=ci)
     return {
         "statistic": result.statistic,
         "estimate": estimate,
-        "ci": (ci.low, ci.high),
+        "ci": (conf_int.low, conf_int.high),
         "effect_size": effect_size,
         "pvalue": result.pvalue,
     }
