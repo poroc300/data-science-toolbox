@@ -121,3 +121,29 @@ def _rank_biserial_correlation_independent(mann_u, n1, n2):
         Rank-biserial correlation coefficient(s), matching the shape of ``mann_u``.
     """
     return 1 - (2 * mann_u) / (n1 * n2)
+
+
+def _rank_biserial_correlation_paired(wilcoxon_t, n):
+    """
+    Calculate rank-biserial correlation for paired samples (Wilcoxon signed-rank).
+
+    This is the effect size for the Wilcoxon signed-rank test, ranging from -1 to 1.
+    Positive values indicate that the first sample tends to be larger than the
+    second sample; negative values indicate the reverse; 0 indicates no tendency
+    either way.
+
+    Parameters
+    ----------
+    wilcoxon_t : float or ndarray
+        The Wilcoxon signed-rank test statistic. If computed along an axis for
+        multiple simultaneous tests, this is an array with that axis removed.
+    n : int or ndarray
+        Number of non-zero paired differences along the tested axis. Must be
+        broadcastable against ``wilcoxon_t``.
+
+    Returns
+    -------
+    float or ndarray
+        Rank-biserial correlation coefficient(s), matching the shape of ``wilcoxon_t``.
+    """
+    return 1 - (2 * wilcoxon_t) / (n * (n + 1))
