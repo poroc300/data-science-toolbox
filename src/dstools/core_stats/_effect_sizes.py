@@ -120,5 +120,4 @@ def _rank_biserial_correlation_independent(mann_u, n1, n2):
     float or ndarray
         Rank-biserial correlation coefficient(s), matching the shape of ``mann_u``.
     """
-    r = 1 - (2 * mann_u) / (n1 * n2)
-    return r
+    return 1 - (2 * mann_u) / (n1 * n2)
