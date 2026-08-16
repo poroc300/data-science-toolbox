@@ -16,4 +16,3 @@ def sample_df():
             "x4": list("abcdefghij") * 10,
         }
     )
-

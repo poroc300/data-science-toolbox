@@ -10,6 +10,7 @@ from dstools.core_stats._effect_sizes import (
     _cohens_d_independent,
     _cohens_dz_paired,
     _rank_biserial_correlation_independent,
+    _rank_biserial_correlation_paired,
 )
 
 
@@ -86,8 +87,8 @@ def test_cohens_dz_paired_axis(efsize_arrays, axis):
 
 
 @pytest.mark.parametrize("mann_u, expected", ((2, 0.8), (10, 0), (18, -0.8)))
-def test_rank_biserial_correlation_independent_values(mann_u, expected):
-    """Test rank biserial correlation with different values."""
+def test_rank_biserial_correlation_independent_scalars(mann_u, expected):
+    """Test rank biserial correlation with different input scalar values."""
     result = _rank_biserial_correlation_independent(mann_u=mann_u, n1=5, n2=4)
     assert expected == result
 
@@ -98,3 +99,22 @@ def test_rank_biserial_correlation_accepts_arrays():
     expected = np.array([1.0, 0.5, 0.0, -0.5, -1.0])
     result = _rank_biserial_correlation_independent(mann_u=mann_u, n1=5, n2=4)
     np.testing.assert_allclose(expected, result)
+
+
+@pytest.mark.parametrize(
+    "pos_rank_sum, neg_rank_sum, expected",
+    ((6.0, 9.0, -0.2), (9, 6, 0.2), (3, 3, 0), (0, 0, 0)),
+)
+def test_rank_biserial_correlation_paired_scalars(pos_rank_sum, neg_rank_sum, expected):
+    """Test function with different scalar input values."""
+    result = _rank_biserial_correlation_paired(pos_rank_sum, neg_rank_sum)
+    assert expected == result
+
+
+def test_rank_biserial_correlation_paired_accepts_arrays():
+    """Test function accepts arrays of positive and negative rank sums."""
+    pos_rank_sum = np.array([9.0, 6.0, 5.0])
+    neg_rank_sum = np.array([6.0, 9.0, 5.0])
+    expected = np.array([0.2, -0.2, 0.0])
+    result = _rank_biserial_correlation_paired(pos_rank_sum, neg_rank_sum)
+    np.testing.assert_allclose(result, expected)

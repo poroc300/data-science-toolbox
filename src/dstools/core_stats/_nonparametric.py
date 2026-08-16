@@ -5,9 +5,6 @@ from scipy.stats import mannwhitneyu, wilcoxon
 from scipy import stats
 
 
-
-
-
 def _mannwhitneyu_ci(arr1, arr2, ci=0.95):
     """
     Calculate confidence interval for Mann-Whitney U test using the Hodges-Lehmann

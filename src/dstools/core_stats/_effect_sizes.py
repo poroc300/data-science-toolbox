@@ -124,74 +124,33 @@ def _rank_biserial_correlation_independent(mann_u, n1, n2):
     return 1 - (2 * mann_u) / (n1 * n2)
 
 
-def _rank_biserial_correlation_paired(arr1, arr2, zero_method="wilcox"):
+def _rank_biserial_correlation_paired(positive_rank_sum, negative_rank_sum):
     """
-    Calculate rank-biserial correlation for paired samples (Wilcoxon signed-rank).
+    Calculate the rank-biserial correlation for a paired Wilcoxon signed-rank test.
 
-    This is the effect size for the Wilcoxon signed-rank test, ranging from -1
-    to 1. Positive values indicate that observations in the first sample tend
-    to be larger than observations in the second sample; negative values
-    indicate the reverse; 0 indicates no tendency either way.
+    The rank-biserial correlation is defined as
+
+        r_rb = (W+ - W-) / (W+ + W-)
+
+    where W+ and W- are the sums of positive and negative signed ranks,
+    respectively.
 
     Parameters
     ----------
-    arr1 : ndarray
-        Array containing observations from the first paired measurement.
-
-    arr2 : ndarray
-        Array containing observations from the second paired measurement.
-        Must have the same shape as ``arr1``.
-
-    zero_method : {"wilcox", "pratt", "zsplit"}, default="wilcox"
-        Method used to handle zero differences, matching the
-        ``zero_method`` argument of ``scipy.stats.wilcoxon``.
+    positive_rank_sum : float or ndarray
+        Sum of ranks corresponding to positive paired differences (W+).
+    negative_rank_sum : float or ndarray
+        Sum of ranks corresponding to negative paired differences (W-).
 
     Returns
     -------
-    float
-        Rank-biserial correlation coefficient, ranging from -1 to 1.
+    float or ndarray
+        Rank-biserial correlation coefficient(s), ranging from -1 to 1.
     """
-    diff = arr1 - arr2
-
-    if diff.size == 0:
-        return 0
-
-    if zero_method == "wilcox":
-        diff = diff[diff != 0]
-
-        if len(diff) == 0:
-            return 0
-
-        ranks = rankdata(np.abs(diff))
-
-        positive_rank_sum = np.sum(ranks[diff > 0])
-        negative_rank_sum = np.sum(ranks[diff < 0])
-
-    elif zero_method == "pratt":
-        ranks = rankdata(np.abs(diff))
-
-        positive_rank_sum = np.sum(ranks[diff > 0])
-        negative_rank_sum = np.sum(ranks[diff < 0])
-
-    elif zero_method == "zsplit":
-        ranks = rankdata(np.abs(diff))
-
-        positive_rank_sum = np.sum(ranks[diff > 0])
-        negative_rank_sum = np.sum(ranks[diff < 0])
-
-        zero_rank_sum = np.sum(ranks[diff == 0])
-
-        positive_rank_sum += zero_rank_sum / 2
-        negative_rank_sum += zero_rank_sum / 2
-
-    else:
-        raise ValueError(
-            "zero_method must be one of 'wilcox', 'pratt', or 'zsplit'"
-        )
-
     denominator = positive_rank_sum + negative_rank_sum
-
-    if denominator == 0:
-        return 0
-
-    return (positive_rank_sum - negative_rank_sum) / denominator
+    return np.divide(
+        positive_rank_sum - negative_rank_sum,
+        denominator,
+        out=np.zeros_like(np.asarray(denominator), dtype=float),
+        where=denominator != 0,
+    )

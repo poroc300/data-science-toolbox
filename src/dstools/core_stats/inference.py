@@ -71,8 +71,15 @@ def t_test(
             * "estimate" : Difference in sample means.
             * "confidence_interval" : Confidence interval for the mean
               difference.
-            * "effect_size" : Cohen's d (independent samples) or Cohen's dz
-              (paired samples).
+            * "effect_size" : Cohen's d or Cohen's dz, a standardized measure of
+              effect size indicating the magnitude of the difference between groups.
+              For independent samples, Cohen's d is computed as the pooled or
+              unpooled difference in means divided by the pooled or standard
+              deviation, depending on ``assume_equal_variance``. Values are
+              typically interpreted as: |d| < 0.2 (negligible), 0.2-0.5 (small),
+              0.5-0.8 (medium), > 0.8 (large). For paired samples, Cohen's dz is
+              used, which is the mean difference divided by the standard deviation
+              of the differences.
             * "pvalue" : p-value of the test.
     """
     arr1 = np.asarray(arr1)
