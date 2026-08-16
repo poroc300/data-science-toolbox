@@ -5,30 +5,7 @@ from scipy.stats import mannwhitneyu, wilcoxon
 from scipy import stats
 
 
-def _rank_biserial_correlation_paired(arr1, arr2):
-    """
-    Calculate rank-biserial correlation for paired samples (Wilcoxon signed-rank).
-    This is the effect size for the Wilcoxon signed-rank test.
 
-    Parameters
-    ----------
-    arr1 : ndarray
-        Array containing observations from the first paired measurement.
-    arr2 : ndarray
-        Array containing observations from the second paired measurement.
-
-    Returns
-    -------
-    float
-        Rank-biserial correlation coefficient.
-    """
-    diff = arr1 - arr2
-    n = np.sum(diff != 0)  # number of non-zero differences
-    if n == 0:
-        return 0
-    T = wilcoxon(arr1, arr2, alternative="two-sided").statistic
-    r = 1 - (2 * T) / (n * (n + 1))
-    return r
 
 
 def _mannwhitneyu_ci(arr1, arr2, ci=0.95):
