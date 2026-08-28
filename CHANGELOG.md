@@ -20,10 +20,16 @@ All notable changes to this project will be documented in this file.
 ## [1.0.0] - 2026/XX/XX
 
 ### New Features
+- **`core_stats`**
+  - Added function `bootstrap` to generate bootstrap samples for estimating the sampling distribution of arbitrary statistics.
+
 - **`data_io`**
   - Added function `save_json` which saves a `dict` into a JSON file.
 
 ### Enhanced
+- **`core_stats`**
+  - `t_test` now calculates Coehn's d effect sizes and confidence intervalsof the estimated differences in means. The default for the independent t-test is now the Welch's t-test as unequal variances of input samples is a more common.
+
 - **`maths`**
   - `rceil` and `rfloor` now return a scalar instead of `np.float`.
 
@@ -37,6 +43,9 @@ All notable changes to this project will be documented in this file.
 - **`package`**
   - Import name changed from `dscience_toolbox` to `dstools` to make it easier and faster to type in import statements.
   - Removed private/internal functions from the public API. Previously exposed via `__init__.py`, these functions are no longer accessible directly from the package namespace.
+
+- **`core_stats`**
+  - Functions that calculate effect sizes are now private (`_effect_sizes.py`).
 
 - **`maths`**
   - New submodule `maths` created to store general purpose functions involving mathematical operations.

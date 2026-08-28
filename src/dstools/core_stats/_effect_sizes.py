@@ -128,12 +128,21 @@ def _rank_biserial_correlation_paired(positive_rank_sum, negative_rank_sum):
     """
     Calculate the rank-biserial correlation for a paired Wilcoxon signed-rank test.
 
-    The rank-biserial correlation is defined as
+    The rank-biserial correlation is an effect size for the Wilcoxon
+    signed-rank test. It measures the direction and magnitude of the
+    difference between paired observations and ranges from -1 to 1.
+
+    Positive values indicate that the positive paired differences have
+    greater rank sums than the negative differences, while negative values
+    indicate the reverse. A value of zero indicates equal positive and
+    negative rank sums.
+
+    The correlation is calculated as:
 
         r_rb = (W+ - W-) / (W+ + W-)
 
-    where W+ and W- are the sums of positive and negative signed ranks,
-    respectively.
+    where W+ and W- are the sums of the ranks corresponding to positive and
+    negative paired differences, respectively.
 
     Parameters
     ----------

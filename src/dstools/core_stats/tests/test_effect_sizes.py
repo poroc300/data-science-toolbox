@@ -93,7 +93,7 @@ def test_rank_biserial_correlation_independent_scalars(mann_u, expected):
     assert expected == result
 
 
-def test_rank_biserial_correlation_accepts_arrays():
+def test_rank_biserial_correlation_independent_accepts_arrays():
     """Test that the function accepts an array of U values."""
     mann_u = np.array([0, 5, 10, 15, 20])
     expected = np.array([1.0, 0.5, 0.0, -0.5, -1.0])
@@ -108,7 +108,7 @@ def test_rank_biserial_correlation_accepts_arrays():
 def test_rank_biserial_correlation_paired_scalars(pos_rank_sum, neg_rank_sum, expected):
     """Test function with different scalar input values."""
     result = _rank_biserial_correlation_paired(pos_rank_sum, neg_rank_sum)
-    assert expected == result
+    np.testing.assert_allclose(expected, result)
 
 
 def test_rank_biserial_correlation_paired_accepts_arrays():

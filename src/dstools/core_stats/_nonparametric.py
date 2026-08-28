@@ -5,46 +5,99 @@ from scipy.stats import mannwhitneyu, wilcoxon
 from scipy import stats
 
 
-def _mannwhitneyu_ci(arr1, arr2, ci=0.95):
+def _mannwhitneyu_ci(arr1, arr2, ci=0.95, axis=0):
     """
-    Calculate confidence interval for Mann-Whitney U test using the Hodges-Lehmann
-    estimator (median of all pairwise differences).
+    Calculate a confidence interval for the Mann-Whitney U test using the
+    Hodges-Lehmann estimator.
+
+    The Hodges-Lehmann estimator is the median of all pairwise differences
+    between observations from the two samples. The confidence interval is
+    calculated by inverting a normal approximation to the Mann-Whitney U
+    statistic.
 
     Parameters
     ----------
     arr1 : ndarray
         Array containing observations from the first sample.
+
     arr2 : ndarray
-        Array containing observations from the second sample.
-    ci : float
-        Confidence level (default 0.95 for 95% CI).
+        Array containing observations from the second sample. Must have the
+        same shape as ``arr1`` except along ``axis``.
+
+    ci : float, default=0.95
+        Confidence level for the interval. Must be between 0 and 1.
+
+    axis : int, default=0
+        Axis corresponding to observations. If ``axis=0``, compute one
+        confidence interval per column. If ``axis=1``, compute one
+        confidence interval per row.
 
     Returns
     -------
     tuple
-        (lower_bound, upper_bound) of the confidence interval.
+        Tuple ``(lower_bound, upper_bound)`` containing the confidence
+        interval bounds. Each bound has the same shape as the input arrays
+        with ``axis`` removed.
+
+    Notes
+    -----
+    Pairwise differences are calculated as ``arr1 - arr2``. Therefore,
+    positive values indicate that observations from ``arr1`` tend to be
+    larger than observations from ``arr2``.
+
+    The confidence interval is based on a normal approximation to the
+    Mann-Whitney U statistic.
     """
-    n1, n2 = arr1.size, arr2.size
+    if not 0 < ci < 1:
+        raise ValueError("ci must be between 0 and 1")
 
-    # Calculate all pairwise differences
-    differences = arr1[:, np.newaxis] - arr2[np.newaxis, :]
-    differences = differences.flatten()
-    differences = np.sort(differences)
+    axis = np.core.numeric.normalize_axis_index(axis, arr1.ndim)
 
-    # Determine the rank indices for confidence interval
+    if arr1.shape[:axis] + arr1.shape[axis + 1 :] != (
+        arr2.shape[:axis] + arr2.shape[axis + 1 :]
+    ):
+        raise ValueError("arr1 and arr2 must have matching shapes except along axis")
+
+    # Move the observation axis to the front.
+    arr1 = np.moveaxis(arr1, axis, 0)
+    arr2 = np.moveaxis(arr2, axis, 0)
+
+    n1 = arr1.shape[0]
+    n2 = arr2.shape[0]
+
+    if n1 == 0 or n2 == 0:
+        raise ValueError("arr1 and arr2 must not be empty")
+
+    output_shape = arr1.shape[1:]
+
+    lower = np.empty(output_shape, dtype=float)
+    upper = np.empty(output_shape, dtype=float)
+
     alpha = 1 - ci
-    z_alpha = stats.norm.ppf(1 - alpha / 2)
+    z = stats.norm.ppf(1 - alpha / 2)
 
-    # Calculate critical index using normal approximation
-    U_critical = stats.norm.ppf(ci) * np.sqrt((n1 * n2 * (n1 + n2 + 1)) / 12)
-    r1 = int(np.ceil((n1 * n2 / 2) - U_critical))
-    r2 = int(np.floor((n1 * n2 / 2) + U_critical + 1))
+    # Standard deviation of the Mann-Whitney U statistic under the null.
+    u_sd = np.sqrt(n1 * n2 * (n1 + n2 + 1) / 12)
 
-    # Ensure indices are within bounds
-    r1 = max(0, r1)
-    r2 = min(len(differences) - 1, r2)
+    u_mean = n1 * n2 / 2
 
-    return (differences[r1], differences[r2])
+    lower_index = int(np.ceil(u_mean - z * u_sd))
+    upper_index = int(np.floor(u_mean + z * u_sd))
+
+    # Convert from U values to zero-based indices.
+    lower_index = np.clip(lower_index, 0, n1 * n2 - 1)
+    upper_index = np.clip(upper_index, 0, n1 * n2 - 1)
+
+    for index in np.ndindex(output_shape):
+        sample1 = arr1[(slice(None),) + index]
+        sample2 = arr2[(slice(None),) + index]
+
+        differences = np.sort((sample1[:, np.newaxis] - sample2[np.newaxis, :]).ravel())
+
+        lower[index] = differences[lower_index]
+        upper[index] = differences[upper_index]
+
+    return lower, upper
 
 
 def _wilcoxon_ci(arr1, arr2, ci=0.95):
