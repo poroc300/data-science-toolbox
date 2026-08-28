@@ -44,7 +44,6 @@ def bootstrap(statistic, *samples, n_boot=10_000, random_state=None):
 
     # estimate 95% confidence interval of the difference of means
     ci95 = np.quantile(estimates, [0.025, 0.975])
-
     """
     # input checks
     if not samples:
