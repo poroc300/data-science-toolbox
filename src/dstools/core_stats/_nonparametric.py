@@ -3,7 +3,10 @@
 import numpy as np
 from scipy.stats import mannwhitneyu, rankdata, wilcoxon
 
-from dstools.core_stats._effect_sizes import _rank_biserial_correlation_independent
+from dstools.core_stats._effect_sizes import (
+    _rank_biserial_correlation_independent,
+    _rank_biserial_correlation_paired,
+)
 
 
 def _mann_whitney(arr1, arr2, alternative, axis):
@@ -236,6 +239,10 @@ def _wilcoxon(arr1, arr2, alternative, zero_method, axis):
             "along the specified axis in a paired test"
         )
 
+    # raise an error if any input array has a nan value
+    if np.any(np.isnan(arr1)) or np.any(np.isnan(arr2)):
+        raise ValueError("missing data is present in input arrays")
+
     # perform Wilcoxon test
     result = wilcoxon(
         arr1,
@@ -245,17 +252,18 @@ def _wilcoxon(arr1, arr2, alternative, zero_method, axis):
         axis=axis,
     )
 
-    # alculate the rank-biserial correlation from the paired differences.
+    # calculate the positive and negative rank sums
     diff = arr1 - arr2
+    pos_rank_sum, neg_rank_sum = _wilcoxon_rank_sums(diff, zero_method, axis)
 
-    effect_size = _wilcoxon_rank_biserial(
+    # calculate the rank-biserial correlation from the paired differences
+    effect_size = _rank_biserial_correlation_paired(
         diff,
         zero_method=zero_method,
         axis=axis,
     )
-
     return {
         "statistic": result.statistic,
-        "effect_size": effect_size,
         "pvalue": result.pvalue,
+        "effect_size": effect_size,
     }

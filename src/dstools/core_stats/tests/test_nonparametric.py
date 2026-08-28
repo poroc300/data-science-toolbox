@@ -55,6 +55,13 @@ def test_mann_whitney_axis_support(non_param_arrays, axis, array_length):
     assert result["effect_size"].size == array_length
 
 
+def test_wilcoxon_rank_sums_single_observation():
+    """Test function with a single observation."""
+    positive, negative = _wilcoxon_rank_sums(np.array([5]), zero_method="wilcox")
+    assert positive == 1.0
+    assert negative == 0.0
+
+
 @pytest.mark.parametrize("zero_method", ("wilcox", "pratt", "zsplit"))
 def test_wilcoxon_rank_sums_no_zeros_same_results_zero_methods(zero_method):
     """Test that without zeros, all methods should give identical results."""
@@ -130,10 +137,3 @@ def test_wilcoxon_rank_sums_invalid_zero_method():
     """Invalid zero-handling methods should raise ValueError."""
     with pytest.raises(ValueError, match="zero_method must be one"):
         _wilcoxon_rank_sums(np.ones(3), zero_method="dummy")
-
-
-def test_wilcoxon_rank_sums_single_observation():
-    """Test function with a single observation."""
-    positive, negative = _wilcoxon_rank_sums(np.array([5]), zero_method="wilcox")
-    assert positive == 1.0
-    assert negative == 0.0
