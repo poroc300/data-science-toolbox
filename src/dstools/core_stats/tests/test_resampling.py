@@ -39,7 +39,7 @@ def test_bootstrap_samples_are_resampled_independently():
     """Test that different samples are involve in the calculation of the bootstrapped statistic."""
     sample1 = np.array([1, 2, 3])
     sample2 = np.array([10, 20, 30])
-    add_means = lambda x,y: np.mean(x) + np.mean(y)
+    add_means = lambda x, y: np.mean(x) + np.mean(y)
     estimates = bootstrap(add_means, sample1, sample2, n_boot=100, random_state=42)
 
     # check both samples participate in the statistic

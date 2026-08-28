@@ -24,3 +24,12 @@ def ttest_arrays():
     arr1 = rng.normal(loc=10, scale=2, size=50)
     arr2 = rng.normal(loc=12, scale=2, size=50)
     return {"arr1": arr1, "arr2": arr2}
+
+
+@pytest.fixture(scope="module")
+def non_param_arrays():
+    """Synthetic arrays with randomly generated values for non-parametric tests."""
+    rng = np.random.default_rng(seed=42)
+    arr1 = rng.integers(0, 100, size=50)
+    arr2 = rng.integers(0, 100, size=50)
+    return {"arr1": arr1, "arr2": arr2}
