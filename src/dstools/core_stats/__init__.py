@@ -15,8 +15,7 @@ __all__ = [
     "check_normality",
     "column_dtypes",
     "correlation",
-    "rank_test"
-    "summary_stats",
+    "rank_testsummary_stats",
     "t_test",
     "vif",
 ]

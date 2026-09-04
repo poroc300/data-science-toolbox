@@ -38,7 +38,7 @@ def summary_stats(df, subset=None, percentiles=None):
         Subset of columns to summarise. Defaults to all numeric columns.
     percentiles : list, optional
         Quantiles passed directly to describe() (values between 0 and 1). The
-        default is to use the 0.025, .25, .5, .75, .975 percentiles.
+        default is to use the 0.025, .10, .25, .5, .75, .90, .975 percentiles.
 
     Returns
     -------
@@ -61,7 +61,7 @@ def summary_stats(df, subset=None, percentiles=None):
 
     # default percentiles
     if percentiles is None:
-        percentiles = (0.025, 0.25, 0.5, 0.75, 0.975)
+        percentiles = (0.025, 0.1, 0.25, 0.5, 0.75, 0.9, 0.975)
 
     # descriptive statistics estimated by pandas decribe()
     summary_df = df_num.describe(percentiles=percentiles)

@@ -30,6 +30,7 @@ All notable changes to this project will be documented in this file.
 - **`core_stats`**
   - `t_test` now calculates Coehn's d effect sizes and confidence intervals of the estimated differences in means. The default for the independent t-test is now the Welch's t-test as unequal variances of input samples is a more common.
   - `rank_based_tests` was renamed to `rank_test` and besides returning the statistic and p-value, it also returns the rank-biserial correlation as an effect size.
+  - `summary_stats` also includes the percentiles 10% and 90% as default.
   
 - **`maths`**
   - `rceil` and `rfloor` now return a scalar instead of `np.float`.

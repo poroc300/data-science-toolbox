@@ -86,10 +86,12 @@ def t_test(
     return _ttest_ind(arr1, arr2, assume_equal_variance, alternative, ci, axis)
 
 
-def rank_test(arr1, arr2, paired=False, alternative="two-sided", zero_method="wilcox", axis=0):
+def rank_test(
+    arr1, arr2, paired=False, alternative="two-sided", zero_method="wilcox", axis=0
+):
     """
-    Perform a nonparametric rank-based comparison between two samples using either 
-    the Mann-Whitney U test for independent samples or the Wilcoxon signed-rank 
+    Perform a nonparametric rank-based comparison between two samples using either
+    the Mann-Whitney U test for independent samples or the Wilcoxon signed-rank
     test for paired samples. The function returns the test statistic, p-value,
     and a rank-biserial correlation effect size ranging from -1 to 1, indicating
     the direction and magnitude of the difference.
@@ -110,7 +112,7 @@ def rank_test(arr1, arr2, paired=False, alternative="two-sided", zero_method="wi
             * "less" - the mean of sample 1 is lower than the mean of sample 2.
             * "greater" - the mean of sample 1 is higher than the mean of sample 2.
     zero_method : {"wilcox", "pratt", "zsplit"}, optional
-        Method used to handle zero differences in the Wilcoxon signed-rank test. 
+        Method used to handle zero differences in the Wilcoxon signed-rank test.
         This parameter is only relevant when ``paired=True``.
 
         * "wilcox" - discard zero differences before ranking (default).
@@ -152,7 +154,7 @@ def rank_test(arr1, arr2, paired=False, alternative="two-sided", zero_method="wi
             negative ranks, respectively. Positive values indicate that
             positive paired differences have greater rank sums, while
             negative values indicat
-        
+
     Notes
     -----
     Tied absolute differences receive their average rank, matching SciPy's
@@ -177,7 +179,9 @@ def rank_test(arr1, arr2, paired=False, alternative="two-sided", zero_method="wi
     """
     arr1, arr2 = np.asarray(arr1), np.asarray(arr2)
     if paired:
-        return _wilcoxon(arr1, arr2, alternative=alternative, axis=axis, zero_method=zero_method)
+        return _wilcoxon(
+            arr1, arr2, alternative=alternative, axis=axis, zero_method=zero_method
+        )
     return _mann_whitney(arr1, arr2, alternative=alternative, axis=axis)
 
 

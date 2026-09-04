@@ -55,9 +55,9 @@ def test_summary_stats_output_columns(titanic_df):
 
 def test_summary_stats_custom_percentiles(sample_df):
     """Test function returns custom percentiles."""
-    test_df = summary_stats(sample_df, percentiles=[0.1, 0.9])
-    assert "10%" in test_df.index
-    assert "90%" in test_df.index
+    test_df = summary_stats(sample_df, percentiles=[0.05, 0.95])
+    assert "5%" in test_df.index
+    assert "95%" in test_df.index
     assert "2.5%" not in test_df.index
 
 
