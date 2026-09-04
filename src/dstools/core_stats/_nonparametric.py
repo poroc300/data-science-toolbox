@@ -257,11 +257,7 @@ def _wilcoxon(arr1, arr2, alternative, zero_method, axis):
     pos_rank_sum, neg_rank_sum = _wilcoxon_rank_sums(diff, zero_method, axis)
 
     # calculate the rank-biserial correlation from the paired differences
-    effect_size = _rank_biserial_correlation_paired(
-        diff,
-        zero_method=zero_method,
-        axis=axis,
-    )
+    effect_size = _rank_biserial_correlation_paired(pos_rank_sum, neg_rank_sum)
     return {
         "statistic": result.statistic,
         "pvalue": result.pvalue,

@@ -4,7 +4,7 @@ from .inference import (
     _permutation_stat_independent,
     _permutation_stat_paired,
     permutation_test_means,
-    rank_based_tests,
+    rank_test,
     t_test,
 )
 from .resampling import bootstrap
@@ -15,6 +15,7 @@ __all__ = [
     "check_normality",
     "column_dtypes",
     "correlation",
+    "rank_test"
     "summary_stats",
     "t_test",
     "vif",

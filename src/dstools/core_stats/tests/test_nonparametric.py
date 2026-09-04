@@ -1,11 +1,17 @@
 """Unit tests for functions in _nonparametric.py."""
 
+import itertools
+
 import numpy as np
 import pytest
 from numpy.testing import assert_almost_equal, assert_array_equal
-from scipy.stats import mannwhitneyu
+from scipy.stats import mannwhitneyu, wilcoxon
 
-from dstools.core_stats._nonparametric import _mann_whitney, _wilcoxon_rank_sums
+from dstools.core_stats._nonparametric import (
+    _mann_whitney,
+    _wilcoxon,
+    _wilcoxon_rank_sums,
+)
 
 
 @pytest.mark.parametrize("alternative", ("two-sided", "less", "greater"))
@@ -137,3 +143,58 @@ def test_wilcoxon_rank_sums_invalid_zero_method():
     """Invalid zero-handling methods should raise ValueError."""
     with pytest.raises(ValueError, match="zero_method must be one"):
         _wilcoxon_rank_sums(np.ones(3), zero_method="dummy")
+
+
+@pytest.mark.parametrize(
+    "zero_method, alternative",
+    itertools.product(("wilcox", "pratt", "zsplit"), ("two-sided", "greater", "less")),
+)
+def test_wilcoxon_values_match_scipy(non_param_arrays, zero_method, alternative):
+    """Check that statistic and p-value match those from scipy."""
+    arr1 = non_param_arrays["arr1"]
+    arr2 = non_param_arrays["arr2"]
+    expected = wilcoxon(arr1, arr2, alternative=alternative, zero_method="wilcox", axis=0)
+    result = _wilcoxon(arr1, arr2, alternative, zero_method, axis=0)
+    assert result["statistic"] == expected.statistic
+    assert result["pvalue"] == expected.pvalue
+
+
+def test_wilcoxon_keys():
+    """Check expected keys are present on the output."""
+    result = _wilcoxon(np.arange(1, 5), np.arange(2, 6), "two-sided", "wilcox", axis=0)
+    assert set(result.keys()) == {"statistic", "pvalue", "effect_size"}
+
+
+@pytest.mark.parametrize(
+    "arr1, arr2, axis",
+    (
+        (np.ones(5), np.ones(3), 0),
+        (np.ones((3, 3)), np.ones((2, 3)), 0),
+        (np.ones((3, 2)), np.ones((2, 3)), 1),
+    ),
+)
+def test_wilcoxon_mismatched_shapes(arr1, arr2, axis):
+    """Check a ValueError is raised if arrays don't have the same shape."""
+    with pytest.raises(ValueError, match="same number of observations"):
+        _wilcoxon(arr1, arr2, "two-sided", "wilcox", axis=axis)
+
+
+def test_wilcoxon_nan_values():
+    """Check a ValueError is raised when missing data is present in any input array."""
+    with pytest.raises(ValueError, match="missing data"):
+        _wilcoxon(np.array([1, np.nan]), np.ones(2), "two-sided", "wilcox", axis=0)
+    with pytest.raises(ValueError, match="missing data"):
+        _wilcoxon(np.ones(2), np.array([1, np.nan]), "two-sided", "wilcox", axis=0)
+
+
+@pytest.mark.parametrize("axis, expected", ((0, 2), (1, 25)))
+def test_wilcoxon_axis_result_orientation(non_param_arrays, axis, expected):
+    """
+    Check output arrays have same length has number of columns when axis=0 and have
+    same length as the number of rows when axis=1.
+    """
+    arr1 = non_param_arrays["arr1"].reshape(25, 2)
+    arr2 = non_param_arrays["arr2"].reshape(25, 2)
+    result = _wilcoxon(arr1, arr2, "two-sided", "wilcox", axis=axis)
+    assert result["statistic"].size == expected
+    assert result["pvalue"].size == expected

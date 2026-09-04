@@ -1,7 +1,6 @@
 """Private functions to compute effect sizes."""
 
 import numpy as np
-from scipy.stats import rankdata
 
 
 def _cohens_d_independent(arr1, arr2, axis=0):

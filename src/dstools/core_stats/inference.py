@@ -1,13 +1,10 @@
 """Statistical inference functions for hypothesis testing."""
 
 import numpy as np
-from scipy.stats import (
-    mannwhitneyu,
-    permutation_test,
-    wilcoxon,
-)
+from scipy.stats import permutation_test
 
 from dstools.core_stats._parametric import _ttest_ind, _ttest_paired
+from dstools.core_stats._nonparametric import _mann_whitney, _wilcoxon
 
 
 def t_test(
@@ -86,14 +83,16 @@ def t_test(
     arr2 = np.asarray(arr2)
     if paired:
         return _ttest_paired(arr1, arr2, alternative, ci, axis)
-    else:
-        return _ttest_ind(arr1, arr2, assume_equal_variance, alternative, ci, axis)
+    return _ttest_ind(arr1, arr2, assume_equal_variance, alternative, ci, axis)
 
 
-def rank_based_tests(arr1, arr2, paired=False, alternative="two-sided", **kwargs):
+def rank_test(arr1, arr2, paired=False, alternative="two-sided", zero_method="wilcox", axis=0):
     """
-    Perform a rank-based nonparametric comparison between two samples. This function
-    wraps scipy.stats.mannwhitneyu and scipy.stats.wilcoxon.
+    Perform a nonparametric rank-based comparison between two samples using either 
+    the Mann-Whitney U test for independent samples or the Wilcoxon signed-rank 
+    test for paired samples. The function returns the test statistic, p-value,
+    and a rank-biserial correlation effect size ranging from -1 to 1, indicating
+    the direction and magnitude of the difference.
 
     Parameters
     ----------
@@ -110,22 +109,76 @@ def rank_based_tests(arr1, arr2, paired=False, alternative="two-sided", **kwargs
             * "two-sided" - the means of the sample distributions are unequal (default).
             * "less" - the mean of sample 1 is lower than the mean of sample 2.
             * "greater" - the mean of sample 1 is higher than the mean of sample 2.
-    **kwargs : dict, optional
-       Additional keyword arguments passed to scipy.stats.mannwhitneyu if paired=False
-       or to scipy.stats.wilcoxon in case paired=True.
+    zero_method : {"wilcox", "pratt", "zsplit"}, optional
+        Method used to handle zero differences in the Wilcoxon signed-rank test. 
+        This parameter is only relevant when ``paired=True``.
+
+        * "wilcox" - discard zero differences before ranking (default).
+        * "pratt" - include zero differences when assigning ranks, but
+          exclude their ranks from the positive and negative rank sums.
+        * "zsplit" - include zero differences in the ranking and split
+          their ranks equally between the positive and negative rank sums.
+    axis : int, optional
+        Axis corresponding to observations. If ``axis=0`` (default), compute one
+        test per column. If ``axis=1``, compute one test per row.
 
     Returns
     -------
-    WilcoxonResult or MannwhitneyuResult
-        Classes which contain the "statistic" and "pvalue" attributes.
+    dict
+        dict containing the result of the selected statistical test:
+        * "statistic" - The test statistic returned by the underlying Mann-Whitney U or
+            Wilcoxon signed-rank test.
+        * "pvalue" - The p-value associated with the test statistic and the specified
+            ``alternative`` hypothesis.
+        * "effect_size"`` - Rank-biserial correlation measuring the direction and magnitude
+            of the difference between the two samples. The value ranges from -1 to 1.
+
+            For the independent-samples Mann-Whitney U test, the
+            rank-biserial correlation is calculated from the U statistic
+            as:
+
+                r_rb = 1 - (2 * U) / (n1 * n2)
+
+            where ``n1`` and ``n2`` are the sample sizes. Positive values
+            indicate that observations in ``arr1`` tend to be larger than
+            those in ``arr2``; negative values indicate the reverse.
+
+            For the paired Wilcoxon signed-rank test, the rank-biserial
+            correlation is calculated as:
+
+                r_rb = (W+ - W-) / (W+ + W-)
+
+            where ``W+`` and ``W-`` are the sums of the positive and
+            negative ranks, respectively. Positive values indicate that
+            positive paired differences have greater rank sums, while
+            negative values indicat
+        
+    Notes
+    -----
+    Tied absolute differences receive their average rank, matching SciPy's
+    implementation of the Wilcoxon signed-rank test.
+
+    The three zero-handling methods differ in when zero differences are
+    included in the ranking:
+
+    "wilcox"
+        Zero differences are removed before ranking. Consequently, they have
+        no effect on the ranks of the non-zero differences.
+
+    "pratt"
+        Zero differences remain when ranks are assigned. Their ranks are then
+        excluded from both the positive and negative rank sums. Because the
+        zeros participate in ranking, they can change the ranks assigned to
+        the non-zero differences.
+
+    "zsplit"
+        Zero differences remain in the ranking and their ranks are split
+        equally between the positive and negative rank sums.
     """
     arr1, arr2 = np.asarray(arr1), np.asarray(arr2)
     if paired:
-        if arr1.size != arr2.size:
-            msg = "both samples must have the same length in a Wilcoxon test"
-            raise ValueError(msg)
-        return wilcoxon(arr1, arr2, alternative=alternative, **kwargs)
-    return mannwhitneyu(arr1, arr2, alternative=alternative, **kwargs)
+        return _wilcoxon(arr1, arr2, alternative=alternative, axis=axis, zero_method=zero_method)
+    return _mann_whitney(arr1, arr2, alternative=alternative, axis=axis)
 
 
 def _permutation_stat_independent(arr1, arr2, axis):
