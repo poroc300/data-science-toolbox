@@ -263,3 +263,37 @@ def _wilcoxon(arr1, arr2, alternative, zero_method, axis):
         "pvalue": result.pvalue,
         "effect_size": effect_size,
     }
+
+
+def _permutation_stat(arr1, arr2, axis, statistic, paired):
+    """
+    Generic statistic to be used by the permutation_test function to calculate
+    differences in a statistic between two groups.
+
+    Parameters
+    ----------
+    arr1 : array-like
+        First sample of observations.
+    arr2 : array-like
+        Second sample of observations.  Must be broadcastable to the same
+        shape as arr1.
+    axis : int
+        Axis along which to compute the mean difference. For 2D arrays:
+        - axis=0 computes differences column-wise (rows are observations)
+        - axis=1 computes differences row-wise (columns are observations)
+    statistic : callable
+        A reducer with signature `statistic(a, axis=...) -> array`, e.g. np.mean,
+        np.median, np.std, scipy.stats.trim_mean.
+    paired : bool
+        If True, compute paired differences between groups, otherwise compute
+        differences in the statistic for independent groups.
+
+    Returns
+    -------
+    ndarray or numpy scalar
+        Difference between the statistic of both samples.
+    """
+    if paired:
+        return statistic(arr1 - arr2, axis=axis)
+    else:
+        return statistic(arr1, axis=axis) - statistic(arr2, axis=axis)

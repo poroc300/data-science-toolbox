@@ -1,10 +1,12 @@
 """Statistical inference functions for hypothesis testing."""
 
+from functools import partial
+
 import numpy as np
-from scipy.stats import permutation_test
+from scipy.stats import permutation_test as scipy_perm_test
 
 from dstools.core_stats._parametric import _ttest_ind, _ttest_paired
-from dstools.core_stats._nonparametric import _mann_whitney, _wilcoxon
+from dstools.core_stats._nonparametric import _mann_whitney, _permutation_stat, _wilcoxon
 
 
 def t_test(
@@ -185,69 +187,40 @@ def rank_test(
     return _mann_whitney(arr1, arr2, alternative=alternative, axis=axis)
 
 
-def _permutation_stat_independent(arr1, arr2, axis):
-    """
-    Callable to be used by the permutation_test function. This callable used the
-    difference in observed means.
-
-    Parameters
-    ----------
-    arr1 : array-like
-        First sample of observations.
-    arr2 : array-like
-        Second sample of observations.  Must be broadcastable to the same
-        shape as arr1.
-    axis : int
-        Axis along which to compute the mean difference. For 2D arrays:
-        - axis=0 computes differences column-wise (rows are observations)
-        - axis=1 computes differences row-wise (columns are observations)
-
-    Returns
-    -------
-    ndarray or numpy scalar
-        Difference between the means of both samples.
-    """
-    return np.mean(arr1, axis=axis) - np.mean(arr2, axis=axis)
-
-
-def _permutation_stat_paired(arr1, arr2, axis):
-    """
-    Callable to be used by the permutation_test function. This callable used the
-    difference in observed means.
-
-    Parameters
-    ----------
-    arr1 : array-like
-        First set of paired observations.
-    arr2 : array-like
-        Second set of paired observations. Must be broadcastable to the same
-        shape as arr1.
-    axis : int
-        Axis along which to compute the mean difference. For 2D arrays:
-        - axis=0 computes differences column-wise (rows are observations)
-        - axis=1 computes differences row-wise (columns are observations)
-
-    Returns
-    -------
-    ndarray or numpy scalar
-        Mean of the pairwise differences along the specified axis.
-    """
-    return np.mean(arr1 - arr2, axis=axis)
-
-
-def permutation_test_means(
-    arr1, arr2, paired=False, nres=10_000, alternative="two-sided", axis=0, seed=10
+def permutation_test(
+    arr1,
+    arr2,
+    statistic=np.mean,
+    statistic_kwargs=None,
+    paired=False,
+    nres=10_000,
+    alternative="two-sided",
+    axis=0,
+    seed=10,
 ):
     """
-    Perform a permutation test to test if the means between two samples are significantly
-    different. This function wraps scipy.stats.permutation_test.
+    Perform a permutation test to test if a summary statistic differs significantly
+    between two samples. This function wraps scipy.stats.permutation_test.
+
+    This is a generalisation of a statistic-difference permutation test: any reducer
+    (mean, median, standard deviation, trimmed mean, a custom function, etc.)
+    can be supplied via `statistic`. Internally, the test statistic is defined as either:
+     - the difference between `statistic(arr1)` and `statistic(arr2)`
+       (independent samples), or
+     - `statistic(arr1 - arr2)` applied to paired differences, with sign-flipping
+       used to build the null distribution (paired samples).
 
     Parameters
     ----------
-    arr1 : array-like
-        First sample of observations.
-    arr2 : array-like
-        Second sample of observations.
+    arr1, arr2 : array-like
+        Samples to compare.
+    statistic : callable, optional
+        A reducer with signature `statistic(a, axis=...) -> array`, e.g. np.mean,
+        np.median, np.std, scipy.stats.trim_mean (via functools.partial), etc.
+        Default is np.mean (equivalent to the original function).
+    statistic_kwargs : dict, optional
+        Extra kwargs bound to `statistic` (e.g. {"proportiontocut": 0.1} for a
+        trimmed mean). Applied via functools.partial.
     paired : bool, optional
         If True, perform a paired permutation test using within-pair sign
         flipping. In this case, arr1 and arr2 must have the same shape. If False
@@ -272,28 +245,29 @@ def permutation_test_means(
 
     Returns
     -------
-    result : PermutationTestResult
-        Object containing:
-       - ``statistic`` : observed test statistic
-       - ``pvalue`` : p-value of the test
-       - ``null_distribution`` : array of resampled statistics (if available)
+    result : dict
+           Dictionary containing:
+          - ``statistic`` : observed test statistic (array or scalar)
+          - ``pvalue`` : p-value of the test (array or scalar)
     """
+    # coerce to numpy arrays
     arr1, arr2 = np.asarray(arr1), np.asarray(arr2)
 
-    # permutation test for paired sample statistics
-    if paired:
-        if arr1.shape != arr2.shape:
-            raise ValueError("for paired test, arr1 and arr2 must have the same shape")
-        stat_func = _permutation_stat_paired
-        permutation_type = "samples"
+    # bind any extra kwargs to the statistic function
+    if statistic_kwargs:
+        statistic = partial(statistic, **statistic_kwargs)
 
-    # permutation test for independent samples
-    else:
-        stat_func = _permutation_stat_independent
-        permutation_type = "independent"
+    # for pair differences, arrays must have same shape
+    if paired and arr1.shape != arr2.shape:
+        raise ValueError("for paired test, arr1 and arr2 must have the same shape")
 
-    # perform permutation test
-    result = permutation_test(
+    # scipy's callback signature is statistic(arr1, arr2, axis), so `statistic`
+    # and `paired` must be pre-bound via partial before passing it in.
+    stat_func = partial(_permutation_stat, statistic=statistic, paired=paired)
+    permutation_type = "samples" if paired else "independent"
+
+    # permutation test via scipy, using the bound stat_func defined above
+    result = scipy_perm_test(
         (arr1, arr2),
         statistic=stat_func,
         permutation_type=permutation_type,
@@ -302,4 +276,4 @@ def permutation_test_means(
         random_state=seed,
         axis=axis,
     )
-    return result
+    return {"statistic": result.statistic, "pvalue": result.pvalue}
