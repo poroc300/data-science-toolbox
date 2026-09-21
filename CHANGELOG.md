@@ -22,7 +22,10 @@ All notable changes to this project will be documented in this file.
 ### New Features
 - **`core_stats`**
   - Added function `bootstrap` to generate bootstrap samples for estimating the sampling distribution of arbitrary statistics.
-
+  
+- **`core_ml`**
+  - Added `train_val_test_split` for splitting datasets into training, validation, and test sets.
+  
 - **`data_io`**
   - Added function `save_json` which saves a `dict` into a JSON file.
 
@@ -49,6 +52,7 @@ All notable changes to this project will be documented in this file.
 
 - **`core_stats`**
   - Functions that calculate effect sizes are now private (`_effect_sizes.py`).
+  - Organisation of the submodule is clearer, with clean separation between parametric and non-parametric statistical tests.
 
 - **`maths`**
   - New submodule `maths` created to store general purpose functions involving mathematical operations.

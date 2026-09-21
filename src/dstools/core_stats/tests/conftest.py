@@ -1,4 +1,4 @@
-"""Fixtures used in unit tests."""
+"""Fixtures used in unit tests in core_stats submodule."""
 
 import numpy as np
 import pytest
