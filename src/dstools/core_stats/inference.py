@@ -196,7 +196,7 @@ def permutation_test(
     nres=10_000,
     alternative="two-sided",
     axis=0,
-    seed=10,
+    random_state=10,
 ):
     """
     Perform a permutation test to test if a summary statistic differs significantly
@@ -240,7 +240,7 @@ def permutation_test(
         difference in observed means in the case of 2D arrays. If axis=0, differences
         are calculated column-wise, while row-wise mean differences will be computed
         if axis=1. The default is 0.
-    seed : int or None, optional
+    random_state : int or None, optional
         Seed for the random number generator passed to scipy. Default is 10.
 
     Returns
@@ -249,6 +249,18 @@ def permutation_test(
            Dictionary containing:
           - ``statistic`` : observed test statistic (array or scalar)
           - ``pvalue`` : p-value of the test (array or scalar)
+
+    Examples
+    --------
+    import numpy as np
+    from dstools.core_stats import permutation_test
+
+    # generate input arrays
+    arr1 = np.random.normal(100, 10, size=100)
+    arr2 = np.random.normal(150, 5, size=100)
+
+    # perform permutation test of the difference of medians between two independent samples
+    result = permutation_test(arr1, arr2, statistic=np.median, nres=1000, random_state=42)
     """
     # coerce to numpy arrays
     arr1, arr2 = np.asarray(arr1), np.asarray(arr2)
@@ -273,7 +285,7 @@ def permutation_test(
         permutation_type=permutation_type,
         n_resamples=nres,
         alternative=alternative,
-        random_state=seed,
+        random_state=random_state,
         axis=axis,
     )
     return {"statistic": result.statistic, "pvalue": result.pvalue}
