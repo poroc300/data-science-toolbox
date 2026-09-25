@@ -75,7 +75,7 @@ def test_train_val_test_split_integer_sizes(titanic_df_xy):
     assert x_train.shape[0] == titanic_df_xy[0].shape[0] - 150
 
 
-def test_reproducible_split(titanic_df_xy):
+def test_train_val_test_split_reproducible_split(titanic_df_xy):
     """Test that the same random state produces the same split."""
     split_1 = train_val_test_split(*titanic_df_xy, random_state=42)
     split_2 = train_val_test_split(*titanic_df_xy, random_state=42)
@@ -86,90 +86,62 @@ def test_reproducible_split(titanic_df_xy):
             assert_series_equal(first, second)
 
 
-# def test_different_random_states_produce_different_splits(titanic_df):
-#     """Test that different random states produce different splits."""
-#     x_data = titanic_df.drop(columns="survived")
+def test_train_val_test_split_no_shuffle(titanic_df_xy):
+    """Test that disabling shuffling preserves the original order."""
+    x_data = titanic_df_xy[0]
+    x_train, x_val, x_test = train_val_test_split(
+        x_data,
+        test_size=0.2,
+        val_size=0.1,
+        shuffle=False,
+    )
 
-#     split_1 = train_val_test_split(x_data, random_state=42)
-#     split_2 = train_val_test_split(x_data, random_state=123)
+    # expected number of samples in test/validation sets
+    n_test = int(np.ceil(x_data.shape[0] * 0.2))
+    n_val = int(np.ceil(x_data.shape[0] * 0.1))
 
-#     assert not np.array_equal(split_1[0], split_2[0])
+    # expected splits
+    expected_train = x_data.iloc[n_test + n_val :]
+    expected_val = x_data.iloc[n_test : n_test + n_val]
+    expected_test = x_data.iloc[:n_test]
 
-
-# def test_no_shuffle(titanic_df):
-#     """Test that disabling shuffling preserves the original order."""
-#     x_data = titanic_df.drop(columns="survived")
-
-#     x_train, x_val, x_test = train_val_test_split(
-#         x_data,
-#         test_size=0.2,
-#         val_size=0.1,
-#         shuffle=False,
-#     )
-
-#     n_test = int(np.ceil(len(x_data) * 0.2))
-#     n_val = int(np.ceil(len(x_data) * 0.1))
-
-#     expected_train = x_data.iloc[n_test + n_val :]
-#     expected_val = x_data.iloc[n_test : n_test + n_val]
-#     expected_test = x_data.iloc[:n_test]
-
-#     assert np.array_equal(x_train, expected_train)
-#     assert np.array_equal(x_val, expected_val)
-#     assert np.array_equal(x_test, expected_test)
+    # assertions
+    assert_frame_equal(x_train, expected_train)
+    assert_frame_equal(x_val, expected_val)
+    assert_frame_equal(x_test, expected_test)
 
 
-# @pytest.mark.parametrize(
-#     "test_size,val_size",
-#     [
-#         (0, 0.1),
-#         (1.0, 0.1),
-#         (-0.1, 0.1),
-#         (0.2, 0),
-#         (0.2, 1.0),
-#         (0.2, -0.1),
-#     ],
-# )
-# def test_invalid_fraction_sizes(titanic_df, test_size, val_size):
-#     """Test that invalid fractional sizes raise ValueError."""
-#     x_data = titanic_df.drop(columns="survived")
-
-#     with pytest.raises(ValueError):
-#         train_val_test_split(
-#             x_data,
-#             test_size=test_size,
-#             val_size=val_size,
-#         )
+@pytest.mark.parametrize(
+    "test_size,val_size",
+    [
+        (0, 0.1),
+        (1.0, 0.1),
+        (-0.1, 0.1),
+        (0.2, 0),
+        (0.2, 1.0),
+        (0.2, -0.1),
+        (0.6, 0.4),  # exhausts training data
+        (-1, 200),
+        (10_000, 200),
+        (500, 500),  # exhausts training data
+    ],
+)
+def test_train_val_test_split_invalid_split_sizes(titanic_df_xy, test_size, val_size):
+    """Test that invalid split sizes raise ValueError."""
+    with pytest.raises(ValueError):
+        train_val_test_split(*titanic_df_xy, test_size=test_size, val_size=val_size)
 
 
-# @pytest.mark.parametrize(
-#     "test_size,val_size",
-#     [
-#         ("0.2", 0.1),
-#         (0.2, "0.1"),
-#         (None, 0.1),
-#         (0.2, None),
-#     ],
-# )
-# def test_invalid_size_types(titanic_df, test_size, val_size):
-#     """Test that invalid size types raise TypeError."""
-#     x_data = titanic_df.drop(columns="survived")
-
-#     with pytest.raises(TypeError):
-#         train_val_test_split(
-#             x_data,
-#             test_size=test_size,
-#             val_size=val_size,
-#         )
-
-
-# def test_sizes_cannot_exhaust_training_data(titanic_df):
-#     """Test that validation and test sets leave data for training."""
-#     x_data = titanic_df.drop(columns="survived")
-
-#     with pytest.raises(ValueError):
-#         train_val_test_split(
-#             x_data,
-#             test_size=0.6,
-#             val_size=0.4,
-#         )
+@pytest.mark.parametrize(
+    "test_size,val_size",
+    [
+        ("0.2", 0.1),
+        (0.2, "0.1"),
+        (None, 0.1),
+        (0.2, None),
+    ],
+)
+def test_train_val_test_split_invalid_size_types(titanic_df_xy, test_size, val_size):
+    """Test that invalid size types raise TypeError."""
+    with pytest.raises(TypeError):
+        train_val_test_split(*titanic_df_xy, test_size=test_size, val_size=val_size)

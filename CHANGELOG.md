@@ -24,7 +24,7 @@ All notable changes to this project will be documented in this file.
   - Added function `bootstrap` to generate bootstrap samples for estimating the sampling distribution of arbitrary statistics.
   
 - **`core_ml`**
-  - Added `train_val_test_split` for splitting datasets into training, validation, and test sets.
+  - Added `train_val_test_split` splitting data into train/validation/test sets, with configurable sizes, shuffling, and a random seed.
   
 - **`data_io`**
   - Added function `save_json` which saves a `dict` into a JSON file.
