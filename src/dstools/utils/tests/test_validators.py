@@ -1,11 +1,14 @@
 """Unit tests for functions in _validators.py."""
 
+import numpy as np
 import pandas as pd
 import pytest
+from pandas.testing import assert_frame_equal
 
-from dstools.utils import (
+from dstools.utils._validators import (
     _check_plotting_inputs,
     _merge_plot_kwargs,
+    _validate_numeric_array,
     _validate_pandas_dataframe,
 )
 
@@ -22,6 +25,55 @@ def test_validate_pandas_dataframe_invalid_input():
     msg = "arg must be a pandas DataFrame or Series, got list"
     with pytest.raises(TypeError, match=msg):
         _validate_pandas_dataframe([3], input_arg="arg")
+
+
+def test_validate_numeric_array_dataframe(titanic_df):
+    """Test non-numeric columns are filtered out."""
+    with pytest.warns(UserWarning, match="dropping non-numeric"):
+        result = _validate_numeric_array(titanic_df)
+        assert titanic_df.shape != result.shape
+
+
+def test_validate_numeric_array_dataframe_not_numeric(titanic_df):
+    """Test that ValueError is raised if input DataFrame does not have numeric columns."""
+    with pytest.raises(ValueError, match="has no numeric columns"):
+        _validate_numeric_array(titanic_df[["sex", "alive"]])
+
+
+def test_validate_numeric_array_dataframe_numeric_only(titanic_df):
+    """Test output DataFrame is equal to input if it contains only numeric columns."""
+    expected = titanic_df[["fare", "age"]].copy()
+    result = _validate_numeric_array(expected)
+    assert_frame_equal(expected, result)
+
+
+@pytest.mark.parametrize("arr", ([1, 2], (1, 2)))
+def test_validate_numeric_array_native_sequences(arr):
+    """Test lists or tuples with numbers only are coerced to numpy arrays."""
+    assert isinstance(_validate_numeric_array(arr), np.ndarray)
+
+
+@pytest.mark.parametrize(
+    "arr", ([1, "2"], (1, "2"), np.array([1, "2"]), pd.Series([1, "2"]))
+)
+def test_validate_numeric_array_not_numeric(arr):
+    """Test non-numeric arrays raise ValueError."""
+    with pytest.raises(ValueError, match="does not have a numeric dtype"):
+        _validate_numeric_array(arr)
+
+
+@pytest.mark.parametrize("arr", (tuple(), [], np.array([]), pd.Series([])))
+def test_validate_numeric_array_empty(arr):
+    """Test arrays without values raise ValueError."""
+    with pytest.raises(ValueError, match="an empty sequence was supplied"):
+        _validate_numeric_array(arr)
+
+
+@pytest.mark.parametrize("arr", (1, {1: 2}, "dummy"))
+def test_validate_numeric_array_invalid_dtype(arr):
+    """Test TypeError is raised with invalid input types."""
+    with pytest.raises(TypeError):
+        _validate_numeric_array(arr)
 
 
 def test_check_plotting_inputs(sample_df):

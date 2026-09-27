@@ -63,6 +63,7 @@ All notable changes to this project will be documented in this file.
   - Path input in `list_files` was being unnecessarily coerced twice to `pathlib.PurePath`.
  
 - **`utils`**
+  - Added function validator `_validate_numeric_array` which checks if input arrays are numeric only.
   - Removed `_to_numpy.py` to coerce input array-like objects to `numpy` arrays. That process relies now on ```np.asarray```.
 
 

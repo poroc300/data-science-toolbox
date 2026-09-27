@@ -6,7 +6,7 @@ import seaborn as sns
 from matplotlib.colors import is_color_like
 from numpy.polynomial import Polynomial
 
-from dstools.utils import (
+from dstools.utils._validators import (
     _check_plotting_inputs,
     _merge_plot_kwargs,
     _validate_pandas_dataframe,

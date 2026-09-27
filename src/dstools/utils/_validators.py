@@ -2,7 +2,9 @@
 
 import warnings
 
+import numpy as np
 import pandas as pd
+from pandas.api.types import is_numeric_dtype
 
 
 def _validate_pandas_dataframe(df, input_arg):
@@ -35,6 +37,59 @@ def _validate_pandas_dataframe(df, input_arg):
     # raise error when input is not a DataFrame or Series
     raise TypeError(
         f"{input_arg} must be a pandas DataFrame or Series, got {type(df).__name__}"
+    )
+
+
+def _validate_numeric_array(data):
+    """
+    Check if provided input contains numeric data only. Output will depend of
+    the supplied input types.
+
+    Parameters
+    ----------
+    data : list, ndarray, Series, or DataFrame
+        Input data to check for numeric data.
+
+    Returns
+    -------
+    ndarray, Series or DataFrame
+        Numeric array, preserving 1D/2D shape (minus any dropped non-numeric
+        DataFrame columns). Returned type depends on input object types:
+            * If input is ``pd.DataFrame``, output preserves object type with discarded
+            non-numeric columns.
+            * If input is ``pd.Series``, function preserves object type.
+            * Function vasts to ``np.ndarray`` any other valid input types.
+    """
+    # DataFrames can have columns of different dtypes
+    if isinstance(data, pd.DataFrame):
+        numeric_data = data.select_dtypes(include=np.number).copy()
+        dropped = set(data.columns) - set(numeric_data.columns)
+        if dropped and numeric_data.shape[1] > 0:
+            warnings.warn(
+                f"dropping non-numeric column(s) {sorted(dropped)}",
+                UserWarning,
+                stacklevel=2,
+            )
+        elif numeric_data.shape[1] == 0:
+            raise ValueError("input DataFrame has no numeric columns")
+
+        return numeric_data
+
+    # handle other object types
+    elif isinstance(data, (list, tuple, np.ndarray, pd.Series)):
+        if not isinstance(data, (pd.Series, np.ndarray)):
+            data = np.asarray(data)
+        if len(data) == 0:
+            raise ValueError("an empty sequence was supplied")
+        elif not is_numeric_dtype(data):
+            raise ValueError("input array/sequence does not have a numeric dtype")
+
+        return data
+
+    # unspported object input types
+    raise TypeError(
+        f"unsupported type {type(data).__name__!r}; expected list, tuple, "
+        "ndarray, Series, or DataFrame"
     )
 
 
